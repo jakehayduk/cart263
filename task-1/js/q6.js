@@ -6,78 +6,31 @@ function setup() {
 }
 
 let counter = 0;
-let radius = 0;
-let ellipseAlpha = 50;
-let i = 0;
-
-const rect1 = {
-    w: 40,
-    h: 40,
-    x: 10,
-    y: 10,
-    r: 255,
-    g: 165,
-    b: 0
-}
 
 function draw() {
-    background(0,0,0);
+    background(0);
 
-    displaySquare();
-    mouseHover();
-    
-        if (counter >= 1 && counter <= 10) {
-            let i = 0;
-            let currentRadius = radius;
-            let currentAlpha = ellipseAlpha;
-
-            while (i < counter) {
-                fill(255, 255, 255, currentAlpha);
-                ellipse(width / 2, height / 2, currentRadius);
-
-                currentRadius += 30;
-                currentAlpha += 5;
-                i++;
-            }
-        }
-
-        if (counter > 10) {
-            counter = 0;
-        }
-}
-
-function displaySquare() {
     push();
-    noStroke();
-    fill(rect1.r, rect1.g, rect1.b);
-    rect(rect1.x, rect1.y, rect1.w);
+    fill(255, 255, 255);
+    textSize(28);
+    textAlign(CENTER, CENTER);
+    text('test', width/2, height/2);
     pop();
-}
 
-function mousePressed() {
-    if (checkCollisionWithSquare()) {
-        counter++;
+    for (let i = 0; i < 10; i++) {
+        push();
+        fill(255, 255, 255);
+        textSize(28);
+        text(i, i * 20 + 20, 40);
+        pop();
     }
-}
 
-function mouseHover() {
-    if (checkCollisionWithSquare()) {
-        rect1.r = 255;
-        rect1.g = 216;
-        rect1.b = 178;
-    }
-    else {
-        rect1.r = 255;
-        rect1.g = 165;
-        rect1.b = 0;
+    for (let i = 15; i > 0; i--) {
+        push();
+        fill(255, 255, 255);
+        textSize(28);
+        text(i, 20, i * 30 + 40);
+        pop();
     }
 }
-
-function checkCollisionWithSquare() {
-    if (mouseX > rect1.x && mouseX < rect1.x + rect1.w &&
-        mouseY > rect1.y && mouseY < rect1.y + rect1.w) {
-        return true;
-    } else {
-        return false;
-    }
-}
+    
