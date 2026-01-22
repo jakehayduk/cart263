@@ -2,37 +2,54 @@ window.onload = setup;
 
 /** function setup */
 function setup(){
-console.log("we are a go!")
+console.log("we are a go!");
+
+
 /*** ALL ANWSERS TO BE ADDED IN THE ALLOCATED SPACE */
 /*** START PART ONE ACCESS */ 
 /* 1: all paragraph elements */
 /***CODE */
+
+console.log(document.querySelectorAll("p"));
+
 /***OUTPUT: 
  * 
+ * NodeList(9) [p#1, p#2.img-descript, p#3.img-descript, p#4.img-descript, p#5.img-descript, p#6.img-descript, p#7.img-descript, p#8.img-descript, p#9.img-descript]
  */
 
 
 /*************************************** */
 /* 2: only the first paragraph element */
 /***CODE */
+
+console.log(document.querySelector("p"));
+
 /***OUTPUT: 
- * 
+ * <p id="1">...</p>
  */
 
 
 /*************************************** */
 /* 3: all elements with the class inner-container */
 /***CODE */
+
+console.log(document.querySelectorAll(".inner-container"));
+
 /***OUTPUT: 
  * 
+ * NodeList(8) [div.inner-container, div.inner-container, div.inner-container, div.inner-container, div.inner-container, div.inner-container, div.inner-container, div.inner-container]
  */
 
 
 /*************************************** */
 /* 4: the last image element inside the element that has the class img-container */
 /***CODE */
+
+console.log(document.querySelector(".img-container").lastElementChild);
+
 /***OUTPUT: 
  * 
+ * <img class="img-image" src="task-2-images/sixteen.png">
  */
 
 
@@ -41,16 +58,32 @@ console.log("we are a go!")
 /* 5B: length of the list in 5A */
 /* 5C: the text content of the first element in the list from 5A */
 /***CODE */
+
+let h2Elements = document.querySelectorAll("h2");
+console.log(h2Elements);
+console.log(h2Elements.length);
+console.log(h2Elements[0].textContent);
+
 /***OUTPUT: 
  * 
+ * NodeList [h2]0: h2length: 1[[Prototype]]: NodeList
+
+1
+
+The header of this fancy page
+
  */
 
 
 /*************************************** */
 /* 6: the element with id name parent */
 /***CODE */
+
+console.log(document.querySelector("#parent"));
+
 /***OUTPUT: 
  * 
+ * <section id="parent">...</section>
  */
 
 /*************************************** */
