@@ -7,7 +7,8 @@ function setup_B() {
   activateButtons(`#TEAM_B`, "ani_canvB",aniA,aniB,aniC,aniD);
 
   /**************** ANI A ************************************ */
-  /** PUT ALL YOUR CODE FOR INTERACTIVE PATTERN A INSIDE HERE */
+  /** PUT ALL YOUR CODE FOR INTERACTIVE PATTERN A INSIDE HERE */  
+
   /**************** ANI A ************************************ */
   /**************** TASK *******************************************
    * YOU CAN USE ALL NOTES --- and see my examples in team-h.js for inspiration and possibly help:)
@@ -49,6 +50,9 @@ function setup_B() {
   }
   /****************ANI C ************************************ */
   /** PUT ALL YOUR CODE FOR INTERACTIVE PATTERN C INSIDE HERE */
+
+
+
   /****************ANI C************************************ */
   /**************** TASK *******************************************
    * YOU CAN USE ALL NOTES --- and see my examples in team-h.js for inspiration and possibly help:)
@@ -69,18 +73,39 @@ function setup_B() {
 
   function aniC(parentCanvas) {
       console.log("in ani-C -teamB");
+      let canvasC = document.querySelector("#ani_canvB_C");
 
     /*** THIS IS THE CALLBACK FOR KEY DOWN (* DO NOT CHANGE THE NAME *..) */
     windowKeyDownRef = function (e) {
-      //code for key down in here
-      console.log(e);
-      console.log("b-down");
+      // KeyDown makes squares
+      
+      let newDot = document.createElement('div');
+      canvasC.appendChild(newDot);
+      newDot.style.backgroundColor = "rgb(" + e.which + ", " + e.which + ", " + e.which + ")";
+      let size = Math.floor(Math.random() * 70);
+      newDot.style.width = size + "px";
+      newDot.style.height = size + "px";
+      newDot.style.position = "absolute";
+      newDot.style.left = (Math.floor(Math.random() * canvasC.offsetWidth) - size/2) + "px";
+      newDot.style.top = (Math.floor(Math.random() * canvasC.offsetHeight) - size/2) + "px";
+      newDot.style.rotate = Math.floor(Math.random() * 360) + "deg";
     };
 
     /*** THIS IS THE CALLBACK FOR KEY UP (*DO NOT CHANGE THE NAME..) */
     windowKeyUpRef = function (e) {
-      console.log(e);
-        console.log("b-up");
+      //KeyUp makes circles
+
+      let newDot = document.createElement('div');
+      canvasC.appendChild(newDot);
+      newDot.style.backgroundColor = "rgb(" + e.which + ", " + e.which + ", " + e.which + ")";
+      let size = Math.floor(Math.random() * 40);
+      newDot.style.width = size + "px";
+      newDot.style.height = size + "px";
+      newDot.style.position = "absolute";
+      newDot.style.left = (Math.floor(Math.random() * canvasC.offsetWidth) - size/2) + "px";
+      newDot.style.top = (Math.floor(Math.random() * canvasC.offsetHeight) - size/2) + "px";
+      newDot.style.rotate = Math.floor(Math.random() * 360) + "deg";
+      newDot.style.borderRadius = "500px";
     };
     //DO NOT REMOVE
     window.addEventListener("keydown", windowKeyDownRef);
@@ -103,6 +128,15 @@ function setup_B() {
    * Do not change any code above or the HTML markup.
    * **/
    function aniD(parentCanvas) {
-    console.log("in ani-D -teamB");
+      console.log("in ani-D -teamB");
+      let canvasD = document.querySelector("#ani_canvB_D");
+
+      let randomTime = 0;
+      setInterval(function() {
+        let newCircle = document.createElement('div');
+        // canvasD.appendChild(newCircle);
+        randomTime = (Math.floor(Math.random() * 5) + 1) * 1000;
+        console.log(randomTime);
+      }, randomTime)
     }
 }
