@@ -131,12 +131,28 @@ function setup_B() {
       console.log("in ani-D -teamB");
       let canvasD = document.querySelector("#ani_canvB_D");
 
-      let randomTime = 0;
       setInterval(function() {
         let newCircle = document.createElement('div');
-        // canvasD.appendChild(newCircle);
-        randomTime = (Math.floor(Math.random() * 5) + 1) * 1000;
-        console.log(randomTime);
-      }, randomTime)
+        canvasD.appendChild(newCircle);
+        let size = Math.floor(Math.random() * 30) +10;
+        newCircle.style.width = size + "px";
+        newCircle.style.height = size + "px";
+        newCircle.style.position = "absolute";
+        newCircle.style.left = (Math.floor(Math.random() * canvasD.offsetWidth) - size/2) + "px";
+        newCircle.style.top = (Math.floor(Math.random() * canvasD.offsetHeight) - size/2) + "px";
+        newCircle.style.backgroundColor = "blue";
+        newCircle.style.borderRadius = "50px";
+      }, 1000)
+
+      window.requestAnimationFrame(animate);
+
+      function animate() {
+        let children = canvasD.childNodes;
+        children.forEach(function(item) {
+          item.style.left = (Math.floor(Math.random() * canvasD.offsetWidth)) + "px";
+          item.style.top = (Math.floor(Math.random() * canvasD.offsetHeight)) + "px";
+        })
+        window.requestAnimationFrame(animate);
+      }
     }
 }
