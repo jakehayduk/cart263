@@ -31,7 +31,8 @@ let garden = {
   };
   // new  sun instancce
   let sun = new Sun(10,10,{r: 240, g: 206,b: 83});
-  let hive = new BeeHive(40,40,{r: 220, g: 120,b: 30})
+  let hive = new BeeHive(100,250,{r: 220, g: 120,b: 30}, 60);
+  let hive2 = new BeeHive(300,250,{r: 220, g: 120,b: 30}, 60);
 
   function createAndRenderTheGarden() {
     /* note how we use dot notation....*/
@@ -42,6 +43,12 @@ let garden = {
     //sun
     sun.renderSun();
     hive.renderBeeHive();
+    hive2.renderBeeHive();
+
+    setInterval(function() {
+      hive.updateHivePos();
+      hive2.updateHivePos();
+    }, 1000)
 
     //grass
     garden.grass.grassDiv.classList.add("grass");
