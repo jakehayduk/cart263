@@ -31,32 +31,37 @@ function setup() {
     let dictionary = "";
     let difficulty = 1;
 
-    fetch('../dictionaries/words.txt')
-        .then(response => response.text())
-        .then((data) => {
-            words = data;
-            // set dictionary to be words as default
-            dictionary = words;
-            prompt = newPrompt();
-        })
-        .catch(error => console.error('Error fetching data:', error));
+    // fetch('../dictionaries/words.txt')
+    //     .then(response => response.text())
+    //     .then((data) => {
+    //         words = data;
+    //         // set dictionary to be words as default
+    //         dictionary = words;
+    //         prompt = newPrompt();
+    //     })
+    //     .catch(error => console.error('Error fetching data:', error));
 
 
-    fetch('../dictionaries/birds.txt')
-        .then(response => response.text())
-        .then((data) => {
-            birds = data;
-        })
-        .catch(error => console.error('Error fetching data:', error));
+    // fetch('../dictionaries/birds.txt')
+    //     .then(response => response.text())
+    //     .then((data) => {
+    //         birds = data;
+    //     })
+    //     .catch(error => console.error('Error fetching data:', error));
 
-    fetch('../dictionaries/dinosaurs.txt')
-        .then(response => response.text())
-        .then((data) => {
-            dinos = data;
-        })
-        .catch(error => console.error('Error fetching data:', error));
+    // fetch('../dictionaries/dinosaurs.txt')
+    //     .then(response => response.text())
+    //     .then((data) => {
+    //         dinos = data;
+    //     })
+    //     .catch(error => console.error('Error fetching data:', error));
 
-
+    getText("../dictionaries/birds.txt");
+    async function getText(file) {
+        let myObject = await fetch(file);
+        let myText = await myObject.text();
+        console.log(myText);
+    }
 
 
     let textInput = document.querySelector('#textInput');
