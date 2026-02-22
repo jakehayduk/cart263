@@ -1,0 +1,193 @@
+/**
+ * Word game
+ * Lucie Soussana, Jake Hayduk
+ * 
+ * A game of making words with the bigrams given
+ * 
+ * Instructions:
+ * - Choose a theme and difficulty level
+ * - Bigrams will appear on the screen
+ * - Make words using the bigrams
+ * - Get a high score before time runs out!
+ * 
+ * Rule Book:
+ * - Words must be at least 3 letters long
+ * - Words must include the bigram prompt
+ * - 2 seconds will be added to the timer for every correct answer
+ * - Gain 5 points for every letter used
+ * - Gain 10 points for every hyphen placed
+ * 
+ */
+
+"use strict";
+
+window.onload = setup;
+
+function setup() {
+    let birds = "";
+    let words = "";
+    let dinos = "";
+    let hyphens = "";
+    let prompt;
+    let dictionary = "";
+    let difficulty = 1;
+    let usedWords = []; 
+    let coins = 0;
+    let timerTime = 60;
+
+    Promise.all([
+    fetch('./dictionaries/words.txt').then(x => x.text()),
+    fetch('./dictionaries/birds.txt').then(x => x.text()),
+    fetch('./dictionaries/dinosaurs.txt').then(x => x.text()),
+    fetch('./dictionaries/hyphens.txt').then(x => x.text())
+    ]).then(([data1, data2, data3, data4]) => {
+        words = data1;
+        birds = data2;
+        dinos = data3;
+        hyphens = data4;
+
+        // set the default dictionary to be all words
+        dictionary = words + birds + dinos + hyphens;
+        prompt = newPrompt();
+    })
+    .catch(error => console.error('Error fetching data:', error));
+
+
+    let textInput = document.querySelector('#textInput');
+    let displayText = document.querySelector(".displayText");
+    textInput.addEventListener("keydown", function (e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            const dict = dictionary.toLowerCase();
+            const answer = textInput.value.toLowerCase().replace(/\;|\:|\s|\=/g, "");
+            const result = dict.includes("\n" + answer + "\r");
+            const checkInclude = answer.includes(prompt);
+            const checkDuplicates = usedWords.includes(answer);
+
+            if (result == true && checkInclude == true && answer.length > 2 && checkDuplicates == false) {
+                usedWords.push(answer);
+                textInput.value = "";
+                displayText.innerHTML = "";
+                prompt = newPrompt();
+                
+                coins ++;
+
+                if (answer.length > 14) {
+                    coins += 5;
+                }
+
+                if (answer.includes("-")) {
+                    coins += 5;
+                }
+
+                document.querySelector(".coins").textContent = "coins: " + coins;
+            }
+
+            else {
+                displayText.style.color = "var(--tertiary)";
+                displayText.style.animation = "shake 0.3s ease-out";
+                setTimeout(function () {
+                    displayText.style.color = "var(--primary)";
+                    displayText.style.animation = "none";
+                }, 500)
+            }
+        }
+    })
+
+    function newPrompt() {
+        prompt = bigrams[Math.floor(Math.random() * (bigrams.length / 10 * difficulty - 1))][0];
+
+        // make it cycle through until it picks a bigram that is included in the various lists
+        while (dictionary.includes(prompt) == false) {
+            prompt = bigrams[Math.floor(Math.random() * (bigrams.length / 10 * difficulty - 1))][0];
+        }
+
+        // console.log((10 / difficulty ** 2) + 0.9);
+        // console.log(bigrams[Math.round((bigrams.length - 1) / ((10 / difficulty ** 2) + 0.9))][0]);
+        document.querySelector('.prompt').textContent = prompt.toUpperCase();
+        return prompt;
+    }
+
+    textInput.addEventListener("input", function() {
+        // console.log(this.innerHTML.toLowerCase().replace(prompt, "<span style='color: green;'>" + prompt + "</span>"));
+        let newHTML = this.value;
+        let newHTML2 = newHTML.toLowerCase().replace(prompt, "<span>" + prompt + "</span>");
+        displayText.innerHTML = newHTML2;
+    })
+
+    document.querySelector("#dropdown").addEventListener("change", function () {
+        console.log(this.value);
+
+
+        if (this.value == "normal") {
+            dictionary = words + birds + dinos + hyphens;
+        }
+        else if (this.value == "birds") {
+            dictionary = birds;
+        }
+        else if (this.value == "dinosaurs") {
+            dictionary = dinos;
+        }
+    })
+
+    document.querySelector(".slider").addEventListener("change", function () {
+        document.querySelector(".difficulty p").textContent = "difficulty: " + this.value;
+
+        difficulty = this.value;
+    })
+
+
+    let timer = timerTime;
+    let gameOn = false;
+
+    document.querySelector(".play-button").addEventListener("click", function () {
+        gameStart();
+        timer = timerTime;
+
+        const timerInterval = setInterval(myTimer, 1000);
+        function myTimer() {
+            if (timer > 0 && gameOn == true) {
+                timer--;
+            }
+
+            if (timer == 0) {
+                myStopFunction();
+                gameEnd();
+                timer = timerTime;
+            }
+
+            document.querySelector(".timer").textContent = timer;
+        }
+
+        function myStopFunction() {
+            clearInterval(timerInterval);
+        }
+    })
+
+    function gameStart() {
+        document.querySelector(".start").style.display = "none";
+        document.querySelector(".gameplay").style.display = "flex";
+        document.querySelector(".slider").style.display = "none";
+        document.querySelector("#dropdown").style.display = "none";
+        document.querySelector(".dictionaries p").textContent = "dictionary: " + document.querySelector("#dropdown").value;
+        textInput.focus();
+        textInput.value = "";
+        displayText.innerHTML = "";
+        usedWords = [];
+        newPrompt();
+        gameOn = true;
+    }
+
+    function gameEnd() {
+        document.querySelector(".start").style.display = "flex";
+        document.querySelector(".gameplay").style.display = "none";
+        document.querySelector(".slider").style.display = "block";
+        document.querySelector("#dropdown").style.display = "block";
+        document.querySelector(".dictionaries p").textContent = "dictionary: ";
+        gameOn = false;
+    }
+
+    document.querySelector(".gameplay").addEventListener("click", function () {
+        textInput.focus();
+    })
+}
