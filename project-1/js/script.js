@@ -28,23 +28,27 @@ function setup() {
     let words = "";
     let dinos = "";
     let hyphens = "";
+    let hockey = "";
     let prompt;
     let dictionary = "";
     let difficulty = 1;
     let usedWords = []; 
     let coins = 0;
+    let coinSpin = 0;
     let timerTime = 60;
 
     Promise.all([
     fetch('./dictionaries/words.txt').then(x => x.text()),
     fetch('./dictionaries/birds.txt').then(x => x.text()),
     fetch('./dictionaries/dinosaurs.txt').then(x => x.text()),
-    fetch('./dictionaries/hyphens.txt').then(x => x.text())
-    ]).then(([data1, data2, data3, data4]) => {
+    fetch('./dictionaries/hyphens.txt').then(x => x.text()),
+    fetch('./dictionaries/hockey.txt').then(x => x.text())
+    ]).then(([data1, data2, data3, data4, data5]) => {
         words = data1;
         birds = data2;
         dinos = data3;
         hyphens = data4;
+        hockey = data5;
 
         // set the default dictionary to be all words
         dictionary = words + birds + dinos + hyphens;
@@ -59,7 +63,7 @@ function setup() {
         if (e.which === 13) {
             e.preventDefault();
             const dict = dictionary.toLowerCase();
-            const answer = textInput.value.toLowerCase().replace(/\;|\:|\s|\=/g, "");
+            const answer = textInput.value.toLowerCase().replace(/\;|\:|\=|\./g, "");
             const result = dict.includes("\n" + answer + "\r");
             const checkInclude = answer.includes(prompt);
             const checkDuplicates = usedWords.includes(answer);
@@ -67,52 +71,63 @@ function setup() {
             if (result == true && checkInclude == true && answer.length > 2 && checkDuplicates == false) {
                 usedWords.push(answer);
                 textInput.value = "";
-                displayText.innerHTML = "";
                 prompt = newPrompt();
                 
-                coins ++;
+                let coinCount = 1;
 
                 if (answer.length > 14) {
-                    coins += 5;
+                    coinCount += 3;
                 }
 
                 if (answer.includes("-")) {
-                    coins += 5;
+                    coinCount += 3;
                 }
+                
+                coins += coinCount;
+                
+                document.querySelector(".coins p").textContent = "coins: " + coins;
 
-                document.querySelector(".coins").textContent = "coins: " + coins;
+                coinSpin += 360;
+                document.querySelector(".coin-icon").style.transform = "rotateY(" + coinSpin + "deg)";
 
-                let coinExists = true;
-                let coinVX = Math.floor(Math.random() * 5) + 1;
-                let coinVY = Math.floor(Math.random() * 10) + 5;
-                let coinX = 0;
-                let coinY = 0;
-                let newCoin = document.createElement("div");
-                newCoin.classList.add("coin");
-                newCoin.innerHTML = "<img src='./images/coin.png'>";
-                document.querySelector(".gameplay").appendChild(newCoin);
-                setTimeout(function() {
-                    newCoin.style.transform = "rotateX(" + Math.floor(Math.random() * 100) + 1 + "deg) rotateY(" + Math.floor(Math.random() * 400) + 1 + "deg) rotateZ(" + Math.floor(Math.random() * 100) + 1 + "deg)";
-                        
+                const span = document.querySelector('.displayText span');
+                const rect = span.getBoundingClientRect();
+
+                displayText.innerHTML = "";
+
+                for (let i = 0; i < coinCount; i++) {
+                    let coinExists = true;
+                    let coinVX = Math.floor(Math.random() * 5) + 1;
+                    let coinVY = Math.floor(Math.random() * 8) + 4;
+                    let coinX = 0;
+                    let coinY = -120;
+                    let newCoin = document.createElement("div");
+                    newCoin.classList.add("coin");
+                    newCoin.innerHTML = "<img src='./images/coin.png'>";
+                    document.querySelector(".gameplay").appendChild(newCoin);
                     setTimeout(function() {
-                        newCoin.remove();
-                        coinExists = false;
-                    }, 2000)
+                        newCoin.style.transform = "rotateX(" + Math.floor(Math.random() * 100) + 1 + "deg) rotateY(" + Math.floor(Math.random() * 400) + 1 + "deg) rotateZ(" + Math.floor(Math.random() * 100) + 1 + "deg)";
+                            
+                        setTimeout(function() {
+                            newCoin.remove();
+                            coinExists = false;
+                        }, 2000)
 
-                    function updateCoin() {
-                        if (!coinExists) return;
+                        function updateCoin() {
+                            if (!coinExists) return;
 
-                        coinVY += -0.1;
-                        coinY += coinVY;
-                        coinX += coinVX - 2.5;
-                        newCoin.style.bottom = 300 + coinY + "px";
-                        newCoin.style.left = 300 + coinX + "px";
-                        console.log(coinVY);
+                            coinVY += -0.1;
+                            coinY += coinVY;
+                            coinX += coinVX - 2.5;
+                            newCoin.style.bottom = rect.bottom + coinY + "px";
+                            newCoin.style.left = rect.left + coinX + "px";
 
+                            requestAnimationFrame(updateCoin);
+                        }
                         requestAnimationFrame(updateCoin);
-                    }
-                    requestAnimationFrame(updateCoin);
-                }, 5)
+                    }, 5)
+                }
+                
             }
 
             else {
@@ -158,6 +173,9 @@ function setup() {
         }
         else if (this.value == "dinosaurs") {
             dictionary = dinos;
+        }
+        else if (this.value == "hockey") {
+            dictionary = hockey;
         }
     })
 

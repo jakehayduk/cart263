@@ -34,6 +34,7 @@ body {
     height: 100vh;
     gap: 30px;
     font-family: var(--font1);
+    overflow: hidden;
 }
 
 header {
@@ -284,22 +285,44 @@ option {
     filter: contrast(0.7);
 }
 
+.coins {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.coin-icon {
+    width: 32px;
+    margin-top: -3px;
+    transition: all 1s cubic-bezier(.06,.78,.41,.98);
+}
+
 .coin {
     width: 32px;
     height: 32px;
     position: absolute;
     transition: all 2s ease-out;
-    animation: coin 0.5s 1.5s;
+    opacity: 0;
+    animation: coin 2s;
 }
 
 .coin img {
     width: 100%;
     position: absolute;
-    z-index: 1;
+    /* filter: hue-rotate(30deg); */
+    filter: drop-shadow(0px 0px 30px rgba(255, 215, 0, 1));
 }
 
 @keyframes coin {
     0% {
+        opacity: 0;
+    }
+
+    5% {
+        opacity: 1;
+    }
+
+    75% {
         opacity: 1;
     }
 
