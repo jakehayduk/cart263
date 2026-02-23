@@ -36,6 +36,8 @@ function setup() {
     let coins = 0;
     let coinSpin = 0;
     let timerTime = 60;
+    let winStreak = 0;
+    // DO SOMETHING WITH THE WINSTREAK SO IT GOES FIRE AFTER 5 CONSECUTIVE CORRECT ANSWERS OR SOMETHING
 
     Promise.all([
     fetch('./dictionaries/words.txt').then(x => x.text()),
@@ -74,6 +76,7 @@ function setup() {
                 prompt = newPrompt();
                 
                 let coinCount = 1;
+                winStreak ++;
 
                 if (answer.length > 14) {
                     coinCount += 3;
@@ -131,6 +134,7 @@ function setup() {
             }
 
             else {
+                winStreak = 0;
                 displayText.style.color = "var(--tertiary)";
                 displayText.style.animation = "shake 0.3s ease-out";
                 setTimeout(function () {

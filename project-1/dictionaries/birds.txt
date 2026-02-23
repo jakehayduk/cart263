@@ -77,6 +77,7 @@ white-eye
 wren
 wren-babbler
 wren-warbler
+wren-spinetail
 robin-chat
 chat-tyrant
 cordon-bleu
@@ -161,6 +162,7 @@ white-eyes
 wrens
 wren-babblers
 wren-warblers
+wren-spinetails
 robin-chats
 chat-tyrants
 cordon-bleus
