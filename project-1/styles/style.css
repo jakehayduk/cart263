@@ -57,6 +57,7 @@ header {
     gap: 50px;
     width: 100%;
     height: 100%;
+    overflow: hidden;
 }
 
 .start {
@@ -281,4 +282,28 @@ option {
 .play-button:hover {
     transform: scale(1.1);
     filter: contrast(0.7);
+}
+
+.coin {
+    width: 32px;
+    height: 32px;
+    position: absolute;
+    transition: all 2s ease-out;
+    animation: coin 0.5s 1.5s;
+}
+
+.coin img {
+    width: 100%;
+    position: absolute;
+    z-index: 1;
+}
+
+@keyframes coin {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
 }

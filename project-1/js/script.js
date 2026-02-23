@@ -81,6 +81,38 @@ function setup() {
                 }
 
                 document.querySelector(".coins").textContent = "coins: " + coins;
+
+                let coinExists = true;
+                let coinVX = Math.floor(Math.random() * 5) + 1;
+                let coinVY = Math.floor(Math.random() * 10) + 5;
+                let coinX = 0;
+                let coinY = 0;
+                let newCoin = document.createElement("div");
+                newCoin.classList.add("coin");
+                newCoin.innerHTML = "<img src='./images/coin.png'>";
+                document.querySelector(".gameplay").appendChild(newCoin);
+                setTimeout(function() {
+                    newCoin.style.transform = "rotateX(" + Math.floor(Math.random() * 100) + 1 + "deg) rotateY(" + Math.floor(Math.random() * 400) + 1 + "deg) rotateZ(" + Math.floor(Math.random() * 100) + 1 + "deg)";
+                        
+                    setTimeout(function() {
+                        newCoin.remove();
+                        coinExists = false;
+                    }, 2000)
+
+                    function updateCoin() {
+                        if (!coinExists) return;
+
+                        coinVY += -0.1;
+                        coinY += coinVY;
+                        coinX += coinVX - 2.5;
+                        newCoin.style.bottom = 300 + coinY + "px";
+                        newCoin.style.left = 300 + coinX + "px";
+                        console.log(coinVY);
+
+                        requestAnimationFrame(updateCoin);
+                    }
+                    requestAnimationFrame(updateCoin);
+                }, 5)
             }
 
             else {
@@ -109,7 +141,6 @@ function setup() {
     }
 
     textInput.addEventListener("input", function() {
-        // console.log(this.innerHTML.toLowerCase().replace(prompt, "<span style='color: green;'>" + prompt + "</span>"));
         let newHTML = this.value;
         let newHTML2 = newHTML.toLowerCase().replace(prompt, "<span>" + prompt + "</span>");
         displayText.innerHTML = newHTML2;
