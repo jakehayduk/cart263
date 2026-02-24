@@ -55,6 +55,8 @@ function setup() {
         // set the default dictionary to be all words
         dictionary = words + birds + dinos + hyphens;
         prompt = newPrompt();
+
+        console.log(words);
     })
     .catch(error => console.error('Error fetching data:', error));
 
