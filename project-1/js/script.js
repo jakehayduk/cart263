@@ -56,7 +56,7 @@ function setup() {
         dictionary = words + birds + dinos + hyphens;
         prompt = newPrompt();
 
-        console.log(words);
+        console.log("Dictionary sample:", JSON.stringify(words.substring(0, 50)));
     })
     .catch(error => console.error('Error fetching data:', error));
 
