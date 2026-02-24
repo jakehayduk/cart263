@@ -68,7 +68,7 @@ function setup() {
             e.preventDefault();
             const dict = dictionary.toLowerCase();
             const answer = textInput.value.toLowerCase().replace(/\;|\:|\=|\./g, "");
-            const result = dict.includes("\n" + answer + "\r");
+            const result = dict.includes("\n" + answer + "\n");
             const checkInclude = answer.includes(prompt);
             const checkDuplicates = usedWords.includes(answer);
 
