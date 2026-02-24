@@ -35,8 +35,11 @@ function setup() {
     let usedWords = []; 
     let coins = 0;
     let coinSpin = 0;
-    let timerTime = 60;
+    let timerTime = 10;
     let winStreak = 0;
+    let promptTime;
+    let answerTimes = [];
+    let answerPrompts = [];
     // DO SOMETHING WITH THE WINSTREAK SO IT GOES FIRE AFTER 5 CONSECUTIVE CORRECT ANSWERS OR SOMETHING
 
     Promise.all([
@@ -55,8 +58,6 @@ function setup() {
         // set the default dictionary to be all words
         dictionary = words + birds + dinos + hyphens;
         prompt = newPrompt();
-
-        console.log("Dictionary sample:", JSON.stringify(words.substring(0, 50)));
     })
     .catch(error => console.error('Error fetching data:', error));
 
@@ -68,14 +69,13 @@ function setup() {
             e.preventDefault();
             const dict = dictionary.toLowerCase();
             const answer = textInput.value.toLowerCase().replace(/\;|\:|\=|\./g, "");
-            const result = dict.includes("\n" + answer + "\n");
+            const result = dict.includes("\n" + answer + "\r");
             const checkInclude = answer.includes(prompt);
             const checkDuplicates = usedWords.includes(answer);
 
             if (result == true && checkInclude == true && answer.length > 2 && checkDuplicates == false) {
                 usedWords.push(answer);
                 textInput.value = "";
-                prompt = newPrompt();
                 
                 let coinCount = 1;
                 winStreak ++;
@@ -133,6 +133,11 @@ function setup() {
                     }, 5)
                 }
                 
+                promptTime = (new Date()) - promptTime;
+                answerTimes.push(promptTime);
+                answerPrompts.push(prompt);
+
+                prompt = newPrompt();
             }
 
             else {
@@ -155,8 +160,8 @@ function setup() {
             prompt = bigrams[Math.floor(Math.random() * (bigrams.length / 10 * difficulty - 1))][0];
         }
 
-        // console.log((10 / difficulty ** 2) + 0.9);
-        // console.log(bigrams[Math.round((bigrams.length - 1) / ((10 / difficulty ** 2) + 0.9))][0]);
+        promptTime = new Date();
+
         document.querySelector('.prompt').textContent = prompt.toUpperCase();
         return prompt;
     }
@@ -229,6 +234,8 @@ function setup() {
         textInput.value = "";
         displayText.innerHTML = "";
         usedWords = [];
+        answerTimes = [];
+        answerPrompts = [];
         newPrompt();
         gameOn = true;
     }
@@ -240,6 +247,10 @@ function setup() {
         document.querySelector("#dropdown").style.display = "block";
         document.querySelector(".dictionaries p").textContent = "dictionary: ";
         gameOn = false;
+        const maxNumber = Math.max(...answerTimes);
+        const index = answerTimes.indexOf(maxNumber);
+
+        document.querySelector(".stats").textContent = "You spent " + (answerTimes[index]/1000).toFixed(2) + "s on the prompt \"" + answerPrompts[index].toUpperCase() + "\"";
     }
 
     document.querySelector(".gameplay").addEventListener("click", function () {

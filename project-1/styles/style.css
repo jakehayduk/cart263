@@ -330,3 +330,7 @@ option {
         opacity: 0;
     }
 }
+
+.stats {
+    margin-top: 100px;
+}
