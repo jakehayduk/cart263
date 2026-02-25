@@ -120,7 +120,13 @@ function setup() {
                     soundCoin3.play();
                 }
                 
+                // add extra coins if the streak is ongoing
+                if (winStreak > 4) {
+                    coinCount = coinCount + 3;
+                }
+
                 // coins is the TOTAL coins and coinCount is the counted coins for any given prompt answer. coinsChange counts the coins per round
+                
                 coins += coinCount;
                 coinsChange += coinCount;
                 
@@ -132,7 +138,14 @@ function setup() {
 
                 // get the position of the part of the answer that cointains the prompt. In this case, it's the only span element
                 const span = document.querySelector('.displayText span');
-                const rect = span.getBoundingClientRect();
+                let rect;
+                if (span) {
+                    rect = span.getBoundingClientRect();
+                }
+                else {
+                    rect = document.querySelector(".prompt").getBoundingClientRect();
+                }
+                
 
                 displayText.innerHTML = "";
 
@@ -327,6 +340,7 @@ function setup() {
         usedWords = [];
         answerTimes = [];
         answerPrompts = [];
+        answerStreaks = [];
         winStreak = 0;
         coinsChange = 0;
         document.querySelector(".fire").style.display = "none";
