@@ -35,13 +35,23 @@ function setup() {
     let difficulty = 1;
     let usedWords = []; 
     let coins = 0;
+    let coinsChange = 0
     let coinSpin = 0;
     let timerTime = 60;
     let winStreak = 0;
+    let winStreakSound = false;
     let promptTime;
     let answerTimes = [];
     let answerPrompts = [];
     let answerStreaks = []
+
+    let sound1 = new Audio('./sounds/sound-1.mp3');
+    let sound2 = new Audio('./sounds/sound-2.mp3');
+    let soundFire = new Audio('./sounds/fire.mp3');
+    let soundCoin1 = new Audio('./sounds/coin1.mp3');
+    let soundCoin2 = new Audio('./sounds/coin2.mp3');
+    let soundCoin3 = new Audio('./sounds/coin3.mp3');
+    let soundIncorrect = new Audio('./sounds/incorrect.mp3');
 
     // fetch the dictionary text files
     Promise.all([
@@ -97,9 +107,22 @@ function setup() {
                 if (answer.includes("-")) {
                     coinCount += 3;
                 }
+
+                if (coinCount == 1) {
+                    soundCoin1.play();
+                }
+
+                else if (coinCount == 4) {
+                    soundCoin2.play();
+                }
+
+                else if (coinCount == 7) {
+                    soundCoin3.play();
+                }
                 
-                // coins is the TOTAL coins and coinCount is the counted coins for any given prompt answer
+                // coins is the TOTAL coins and coinCount is the counted coins for any given prompt answer. coinsChange counts the coins per round
                 coins += coinCount;
+                coinsChange += coinCount;
                 
                 document.querySelector(".coins p").textContent = "coins: " + coins;
 
@@ -178,6 +201,7 @@ function setup() {
 
             else {
                 // if the player gets the answer wrong, reset the win streak and play the incorrect animation
+                soundIncorrect.play();
                 winStreak = 0;
                 displayText.style.color = "var(--tertiary)";
                 displayText.style.animation = "shake 0.3s ease-out";
@@ -190,9 +214,16 @@ function setup() {
             // at 5 consecutive correct answers, display the fire to indicate the player's win streak
             if (winStreak > 4) {
                 document.querySelector(".fire").style.display = "block";
+                
+                if (!winStreakSound) {
+                    winStreakSound = true;
+                    soundFire.play();
+                }
+                
             }
 
             else {
+                winStreakSound = false;
                 document.querySelector(".fire").style.display = "none";
             }
         }
@@ -240,6 +271,8 @@ function setup() {
         else if (this.value == "hockey players") {
             dictionary = hockey;
         }
+
+        sound1.play();
     })
 
     // update the difficulty based on the slider value
@@ -247,6 +280,7 @@ function setup() {
         document.querySelector(".difficulty p").textContent = "difficulty: " + this.value;
 
         difficulty = this.value;
+        sound1.play();
     })
 
     // set the timer to be the 
@@ -255,10 +289,11 @@ function setup() {
 
     // click play button to start
     document.querySelector(".play-button").addEventListener("click", function () {
+        sound2.play();
         gameStart();
-        timer = timerTime;
-
+        
         // The game timer
+        timer = timerTime;
         const timerInterval = setInterval(myTimer, 1000);
         function myTimer() {
             if (timer > 0 && gameOn == true) {
@@ -293,6 +328,7 @@ function setup() {
         answerTimes = [];
         answerPrompts = [];
         winStreak = 0;
+        coinsChange = 0;
         document.querySelector(".fire").style.display = "none";
         newPrompt();
         gameOn = true;
@@ -312,11 +348,13 @@ function setup() {
         const index = answerTimes.indexOf(maxNumber);
 
         // display the time and the prompt it was used on, as well as the longest answer streak
-        document.querySelector(".stats").innerHTML = "<p>You spent " + (answerTimes[index]/1000).toFixed(2) + "s on the prompt \"" + answerPrompts[index].toUpperCase() + "\" and answered \"" + usedWords[index].toUpperCase() + "\".</p><p>Your longest streak was " + Math.max(...answerStreaks) + ".</p>";
+        document.querySelector(".stats").innerHTML = "<h2>+" + coinsChange + " coins</h2><p>You spent " + (answerTimes[index]/1000).toFixed(2) + "s on the prompt \"" + answerPrompts[index].toUpperCase() + "\" and answered \"" + usedWords[index].toUpperCase() + "\".</p><p>Your longest streak was " + Math.max(...answerStreaks) + ".</p>";
     }
 
     // make sure the text input is focused when clicking anywhere in the parent div
     document.querySelector(".gameplay").addEventListener("click", function () {
         textInput.focus();
     })
+
+    
 }
