@@ -35,7 +35,7 @@ function setup() {
     let usedWords = []; 
     let coins = 0;
     let coinSpin = 0;
-    let timerTime = 10;
+    let timerTime = 60;
     let winStreak = 0;
     let promptTime;
     let answerTimes = [];
@@ -68,7 +68,7 @@ function setup() {
         if (e.which === 13) {
             e.preventDefault();
             const dict = dictionary.toLowerCase();
-            const answer = textInput.value.toLowerCase().replace(/\;|\:|\=|\./g, "");
+            const answer = textInput.value.toLowerCase().replace(/\;|\:|\=|\.|\,|0|1|2|3|4|5|5|6|7|8|9|\"|\\|\]|\{\[|\{|\//g, "");
             const result = dict.includes("\n" + answer + "\r");
             const checkInclude = answer.includes(prompt);
             const checkDuplicates = usedWords.includes(answer);
@@ -78,7 +78,6 @@ function setup() {
                 textInput.value = "";
                 
                 let coinCount = 1;
-                winStreak ++;
 
                 if (answer.length > 14) {
                     coinCount += 3;
@@ -137,6 +136,11 @@ function setup() {
                 answerTimes.push(promptTime);
                 answerPrompts.push(prompt);
 
+                winStreak ++;
+                if (promptTime > 4500) {
+                    winStreak = 0;
+                }
+                
                 prompt = newPrompt();
             }
 
@@ -148,6 +152,14 @@ function setup() {
                     displayText.style.color = "var(--primary)";
                     displayText.style.animation = "none";
                 }, 500)
+            }
+
+            if (winStreak > 4) {
+                document.querySelector(".fire").style.display = "block";
+            }
+
+            else {
+                document.querySelector(".fire").style.display = "none";
             }
         }
     })
@@ -236,6 +248,8 @@ function setup() {
         usedWords = [];
         answerTimes = [];
         answerPrompts = [];
+        winStreak = 0;
+        document.querySelector(".fire").style.display = "none";
         newPrompt();
         gameOn = true;
     }
@@ -250,7 +264,7 @@ function setup() {
         const maxNumber = Math.max(...answerTimes);
         const index = answerTimes.indexOf(maxNumber);
 
-        document.querySelector(".stats").textContent = "You spent " + (answerTimes[index]/1000).toFixed(2) + "s on the prompt \"" + answerPrompts[index].toUpperCase() + "\"";
+        document.querySelector(".stats").textContent = "You spent " + (answerTimes[index]/1000).toFixed(2) + "s on the prompt \"" + answerPrompts[index].toUpperCase() + "\" and answered \"" + usedWords[index].toUpperCase() + "\"";
     }
 
     document.querySelector(".gameplay").addEventListener("click", function () {

@@ -136,8 +136,8 @@ header {
 }
 
 .displayText span {
-    color: rgb(153, 205, 50);
-    text-shadow: lime 0px 0px 20px;
+    color: rgb(244, 210, 20);
+    text-shadow: rgb(255, 225, 0) 0px 0px 20px;
 }
 
 @keyframes shake {
@@ -197,6 +197,23 @@ header {
     font-size: 2rem;
     font-family: var(--font1);
     font-weight: 500;
+    position: relative;
+    z-index: 1;
+}
+
+.prompt-container {
+    position: relative;
+}
+
+.fire {
+    position: absolute;
+    display: none;
+    width: 56px;
+    top: -30px;
+    right: -30px;
+    image-rendering: pixelated;
+    filter: drop-shadow(0px 0px 30px rgb(255, 204, 0)) drop-shadow(0px 0px 15px rgb(255, 136, 0));
+    z-index: 2;
 }
 
 .dictionaries {
@@ -332,5 +349,7 @@ option {
 }
 
 .stats {
-    margin-top: 100px;
+    margin-top: 50px;
+    padding: 10%;
+    text-align: center;
 }

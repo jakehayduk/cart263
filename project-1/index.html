@@ -13,7 +13,6 @@
     <script src="./js/bigrams.js"></script>
     <script src="./js/script.js"></script>
 </head>
-
 <body>
     <header>
         <div class="difficulty">
@@ -36,11 +35,14 @@
     <div class="start">
         <h1 class="big-title">Word Nerd</h1>
         <button class="play-button">Play</button>
-        <div class="stats"></div>
+        <div class="stats">Type words that contain the prompt</div>
     </div>
     
     <div class="gameplay">
-        <h3 class="prompt">CU</h3>
+        <div class="prompt-container">
+            <h3 class="prompt">CU</h3>
+            <img src="./images/fire.gif" class="fire">
+        </div>
         <input type="text" id="textInput" maxlength="40" autocomplete="off">
         <div class="displayText"></div>
     </div>
