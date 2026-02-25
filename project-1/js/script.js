@@ -40,6 +40,7 @@ function setup() {
     let promptTime;
     let answerTimes = [];
     let answerPrompts = [];
+    let answerStreaks = []
     // DO SOMETHING WITH THE WINSTREAK SO IT GOES FIRE AFTER 5 CONSECUTIVE CORRECT ANSWERS OR SOMETHING
 
     Promise.all([
@@ -68,7 +69,7 @@ function setup() {
         if (e.which === 13) {
             e.preventDefault();
             const dict = dictionary.toLowerCase();
-            const answer = textInput.value.toLowerCase().replace(/\;|\:|\=|\.|\,|0|1|2|3|4|5|5|6|7|8|9|\"|\\|\]|\{\[|\{|\//g, "");
+            const answer = textInput.value.toLowerCase().replace(/\;|\:|\=|\.|\,|0|1|2|3|4|5|5|6|7|8|9|\"|\\|\]|\{|\[|\{|\//g, "");
             const result = dict.includes("\n" + answer + "\r");
             const checkInclude = answer.includes(prompt);
             const checkDuplicates = usedWords.includes(answer);
@@ -137,9 +138,12 @@ function setup() {
                 answerPrompts.push(prompt);
 
                 winStreak ++;
+
                 if (promptTime > 4500) {
                     winStreak = 0;
                 }
+
+                answerStreaks.push(winStreak);
                 
                 prompt = newPrompt();
             }
@@ -264,7 +268,7 @@ function setup() {
         const maxNumber = Math.max(...answerTimes);
         const index = answerTimes.indexOf(maxNumber);
 
-        document.querySelector(".stats").textContent = "You spent " + (answerTimes[index]/1000).toFixed(2) + "s on the prompt \"" + answerPrompts[index].toUpperCase() + "\" and answered \"" + usedWords[index].toUpperCase() + "\"";
+        document.querySelector(".stats").innerHTML = "<p>You spent " + (answerTimes[index]/1000).toFixed(2) + "s on the prompt \"" + answerPrompts[index].toUpperCase() + "\" and answered \"" + usedWords[index].toUpperCase() + "\".</p><p>Your longest streak was " + Math.max(...answerStreaks) + ".</p>";
     }
 
     document.querySelector(".gameplay").addEventListener("click", function () {

@@ -68,6 +68,7 @@ header {
     align-items: center;
     gap: 30px;
     animation: floating 3s infinite ease-in-out;
+    padding-top: 150px;
 }
 
 @keyframes floating {
@@ -352,4 +353,7 @@ option {
     margin-top: 50px;
     padding: 10%;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
 }
