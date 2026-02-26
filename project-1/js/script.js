@@ -363,6 +363,9 @@ function setup() {
 
         // display the time and the prompt it was used on, as well as the longest answer streak
         document.querySelector(".stats").innerHTML = "<h2>+" + coinsChange + " coins</h2><p>You spent " + (answerTimes[index]/1000).toFixed(2) + "s on the prompt \"" + answerPrompts[index].toUpperCase() + "\" and answered \"" + usedWords[index].toUpperCase() + "\".</p><p>Your longest streak was " + Math.max(...answerStreaks) + ".</p>";
+
+        saveStateHandler();
+        retrieveHandler();
     }
 
     // make sure the text input is focused when clicking anywhere in the parent div
@@ -371,4 +374,37 @@ function setup() {
     })
 
     
+    
+    // for (let i = 0; i < theButtons.length; i++) {
+    //     theButtons[i].addEventListener("click", saveStateHandler);
+    // }
+
+    // the callback function
+    function saveStateHandler() {
+        
+        // let buttonID = this.parentElement.id;
+        // let inputValue = this.parentElement.querySelector("input").value;
+        // console.log(inputValue);
+
+        if (coins !== 0) {
+            // Save the value to local storage
+            localStorage.setItem("coins", coins);
+            // Reset input value
+            coins = 0;
+        }
+    }
+
+
+    // callBack function
+    function retrieveHandler() {
+        // for (let [key, value] of Object.entries(localStorage)) {
+        //     let textBox = document.querySelector(div[data-ref=${key}]);
+        //     textBox.innerHTML = value;
+        // }
+        coins = Number(localStorage.getItem("coins"));
+        console.log(coins);
+        document.querySelector(".coins p").textContent = "coins: " + coins;
+    } 
+    
+    retrieveHandler();
 }
