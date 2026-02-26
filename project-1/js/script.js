@@ -88,7 +88,7 @@ function setup() {
             const dict = dictionary.toLowerCase();
             const answer = textInput.value.toLowerCase().replace(/\;|\:|\=|\.|\,|0|1|2|3|4|5|5|6|7|8|9|\"|\\|\]|\{|\[|\{|\//g, "");
             // check for includes consistent with all of our dictionary formatting
-            const result = dict.includes("\n" + answer + "\r");
+            const result = dict.includes("\n" + answer + "\n");
             const checkInclude = answer.includes(prompt);
             const checkDuplicates = usedWords.includes(answer);
 

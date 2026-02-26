@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Nerd</title>
+    <link rel="stylesheet" href="./styles/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bitcount+Single:wght@100..900&family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <script src="./js/bigrams.js"></script>
+    <script src="./js/script.js"></script>
+</head>
+
+<body>
+    <div class="start">
+        <h1 class="big-title">Word Nerd</h1>
+        <button class="play-button">Play</button>
+    </div>
+    <h2 class="timer">60</h2>
+    <div class="gameplay">
+        <h3 class="prompt">CU</h3>
+        <input type="text" id="textInput">
+    </div>
+    <select name="dictionaries" id="dropdown">
+        <option value="normal">Normal</option>
+        <option value="birds">Birds</option>
+        <option value="dinosaurs">Dinosaurs</option>
+    </select>
+    <div class="difficulty">
+        <p>difficulty: 1</p>
+        <input type="range" min="1" max="10" value="1" class="slider" id="myRange">
+    </div>
+    
+</body>
+
+</html>
