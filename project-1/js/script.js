@@ -175,11 +175,12 @@ function setup() {
                         }, 2000)
 
                         // update each coin's position and close the loop using the return if the coin no longer exists
-                        function updateCoin() {
+                        let lastTime = 0;
+                        function updateCoin(currentTime) {
                             if (!coinExists) return;
-
+                            let deltaTime = currentTime - lastTime;
                             // change the coin's velocity by a negative gravitational accelerant constant
-                            coinVY += -0.1;
+                            coinVY += -0.00004 * deltaTime;
                             // update the x and y positions based on the velocities
                             coinY += coinVY;
                             coinX += coinVX - 2.5;
@@ -187,6 +188,7 @@ function setup() {
                             newCoin.style.bottom = rect.bottom + coinY + "px";
                             newCoin.style.left = rect.left + coinX + "px";
 
+                            
                             requestAnimationFrame(updateCoin);
                         }
                         requestAnimationFrame(updateCoin);
@@ -402,7 +404,6 @@ function setup() {
         //     textBox.innerHTML = value;
         // }
         coins = Number(localStorage.getItem("coins"));
-        console.log(coins);
         document.querySelector(".coins p").textContent = "coins: " + coins;
     } 
     
