@@ -40,6 +40,7 @@ body {
 
 header {
     position: fixed;
+    z-index: 100;
     top: 0;
     left: 0;
     width: 100%;
@@ -47,7 +48,7 @@ header {
     justify-content: space-between;
     align-items: center;
     border-bottom: 3px solid rgba(125, 125, 125, 0.3);
-    padding: 30px;
+    padding: 30px 10% 30px 5%;
     font-weight: 500;
 }
 
@@ -361,3 +362,45 @@ option {
     flex-direction: column;
     gap: 30px;
 }
+
+.settings-button {
+    width: 43px;
+    height: 43px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.settings-button:hover {
+    transform: scale(1.1) rotate(180deg);
+}
+
+.settings-button img {
+    width: 100%;
+}
+
+.settings {
+    height: 100vh;
+    width: 100vw;
+    background-color: var(--primary);
+    position: fixed;
+    display: none;
+    z-index: 99;
+    color: var(--secondary);
+    transition: all 0.5s;
+    transform: translateY(-100vh);
+    /* animation: settings 0.5s; */
+}
+
+
+/* @keyframes settings {
+    0% {
+        transform: translateY(-100vh);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+} */

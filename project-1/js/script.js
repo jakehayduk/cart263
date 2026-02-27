@@ -88,7 +88,7 @@ function setup() {
             const dict = dictionary.toLowerCase();
             const answer = textInput.value.toLowerCase().replace(/\;|\:|\=|\.|\,|0|1|2|3|4|5|5|6|7|8|9|\"|\\|\]|\{|\[|\{|\//g, "");
             // check for includes consistent with all of our dictionary formatting
-            const result = dict.includes("\n" + answer + "\n");
+            const result = dict.includes("\n" + answer + "\r");
             const checkInclude = answer.includes(prompt);
             const checkDuplicates = usedWords.includes(answer);
 
@@ -396,7 +396,6 @@ function setup() {
         }
     }
 
-
     // callBack function
     function retrieveHandler() {
         // for (let [key, value] of Object.entries(localStorage)) {
@@ -408,4 +407,21 @@ function setup() {
     } 
     
     retrieveHandler();
+
+    let settingsOpen = false;
+    document.querySelector(".settings-button").addEventListener("click", function () {
+        const settings = document.querySelector(".settings");
+        if (!settingsOpen) {
+            settings.style.display = "flex";
+            setTimeout(function() {
+                settings.style.transform = "translateY(0)";
+                settingsOpen = true;
+            }, 5)
+        }
+        else {
+            settings.style.transform = "translateY(-100vh)";
+            // settings.style.display = "none";
+            settingsOpen = false;
+        }
+    })
 }
