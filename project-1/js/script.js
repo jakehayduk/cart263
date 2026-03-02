@@ -272,26 +272,28 @@ function setup() {
 
     // when something is selected from the dictionaries dropdown list
     document.querySelector("#dropdown").addEventListener("change", function () {
-
-        // change the dictionary depending on the selected value
-        if (this.value == "normal") {
-            // the 'normal' dictionary includes all other dictionaries that contain valid words that are not proper noun dictionaries
-            dictionary = words + birds + dinos + hyphens;
-        }
-        else if (this.value == "birds") {
-            dictionary = birds;
-        }
-        else if (this.value == "dinosaurs") {
-            dictionary = dinos;
-        }
-        else if (this.value == "hockey players") {
-            dictionary = hockey;
-        }
-
+        changeDictionary(this.value)
         sound1.play();
 
         saveStateHandler();
     })
+
+    function changeDictionary(value) {
+        // change the dictionary depending on the selected value
+        if (value == "normal") {
+            // the 'normal' dictionary includes all other dictionaries that contain valid words that are not proper noun dictionaries
+            dictionary = words + birds + dinos + hyphens;
+        }
+        else if (value == "birds") {
+            dictionary = birds;
+        }
+        else if (value == "dinosaurs") {
+            dictionary = dinos;
+        }
+        else if (value == "hockey players") {
+            dictionary = hockey;
+        }
+    }
 
     // update the difficulty based on the slider value
     document.querySelector(".slider").addEventListener("change", function () {
@@ -423,7 +425,8 @@ function setup() {
         }
         
         let localDictionary = localStorage.getItem("dictionary");
-        if (localDictionary !== null && localDictionary !== "") {
+        if (localDictionary) {
+            changeDictionary(localDictionary);
             document.querySelector("#dropdown").value = localDictionary;
         }
         
