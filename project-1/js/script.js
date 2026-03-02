@@ -74,6 +74,9 @@ function setup() {
 
         // set the prompt function
         prompt = newPrompt();
+
+        // retrieve locally stored data once the dictionaries are loaded
+        retrieveHandler();
     })
     .catch(error => console.error('Error fetching data:', error));
 
@@ -436,8 +439,7 @@ function setup() {
             document.querySelector(".volume-slider").value = localVolume * 10;
         }
     } 
-    
-    retrieveHandler();
+
 
     // settings menu open and close animations
     let settingsOpen = false;
