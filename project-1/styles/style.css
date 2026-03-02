@@ -194,6 +194,7 @@ header {
     font-size: 4rem;
     font-weight: 450;
     margin-bottom: -1rem;
+    transition: all 0.5s;
 }
 
 .prompt {
@@ -223,6 +224,7 @@ header {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    transition: all 0.5s;
 }
 
 select {
@@ -240,6 +242,7 @@ select {
     color: var(--secondary);
     border-radius: var(--radius);
     cursor: pointer;
+    transition: all 0.5s;
 }
 
 option {
@@ -253,6 +256,7 @@ option {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    transition: all 0.5s;
 }
 
 .slider {
@@ -264,13 +268,8 @@ option {
     background: var(--primary);
     outline: none;
     opacity: 1;
-    -webkit-transition: .2s;
-    transition: opacity .2s;
+    transition: all 0.5s;
     border-radius: var(--radius);
-}
-
-.slider:hover {
-    opacity: 1;
 }
 
 .slider::-webkit-slider-thumb {
@@ -313,12 +312,14 @@ option {
     display: flex;
     align-items: center;
     gap: 5px;
+    transition: all 0.5s;
 }
 
 .coin-icon {
     width: 32px;
     margin-top: -3px;
     transition: all 1s cubic-bezier(.06,.78,.41,.98);
+    user-select: none;
 }
 
 .coin {
@@ -364,13 +365,14 @@ option {
 }
 
 .settings-button {
-    width: 43px;
-    height: 43px;
+    width: 32px;
+    height: 32px;
     cursor: pointer;
     transition: all 0.3s;
     display: flex;
     justify-content: center;
     align-items: center;
+    user-select: none;
 }
 
 .settings-button:hover {
@@ -379,6 +381,7 @@ option {
 
 .settings-button img {
     width: 100%;
+    left: 0.5px;
 }
 
 .settings {
@@ -389,18 +392,45 @@ option {
     display: none;
     z-index: 99;
     color: var(--secondary);
-    transition: all 0.5s;
+    transition: all 0.5s cubic-bezier(.12,.73,.33,.99);
     transform: translateY(-100vh);
-    /* animation: settings 0.5s; */
+    padding: 200px 5% 5% 5%;
 }
 
+.volume {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 500px
+}
 
-/* @keyframes settings {
-    0% {
-        transform: translateY(-100vh);
-    }
+.volume-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 50px;
+    padding: 15px;
+    background: var(--secondary);
+    outline: none;
+    opacity: 1;
+    transition: all 0.5s;
+    border-radius: var(--radius);
+}
 
-    100% {
-        transform: translateY(0);
-    }
-} */
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background: var(--tertiary);
+    cursor: pointer;
+    border-radius: var(--radius);
+}
+
+.volume-slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    background: var(--tertiary);
+    cursor: pointer;
+    border-radius: var(--radius);
+}

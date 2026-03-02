@@ -37,7 +37,7 @@ function setup() {
     let coins = 0;
     let coinsChange = 0
     let coinSpin = 0;
-    let timerTime = 60;
+    let timerTime = 10;
     let winStreak = 0;
     let winStreakSound = false;
     let promptTime;
@@ -52,6 +52,7 @@ function setup() {
     let soundCoin2 = new Audio('./sounds/coin2.mp3');
     let soundCoin3 = new Audio('./sounds/coin3.mp3');
     let soundIncorrect = new Audio('./sounds/incorrect.mp3');
+    let volume = 1;
 
     // fetch the dictionary text files
     Promise.all([
@@ -288,6 +289,8 @@ function setup() {
         }
 
         sound1.play();
+
+        saveStateHandler();
     })
 
     // update the difficulty based on the slider value
@@ -296,6 +299,8 @@ function setup() {
 
         difficulty = this.value;
         sound1.play();
+
+        saveStateHandler();
     })
 
     // set the timer to be the 
@@ -367,7 +372,6 @@ function setup() {
         document.querySelector(".stats").innerHTML = "<h2>+" + coinsChange + " coins</h2><p>You spent " + (answerTimes[index]/1000).toFixed(2) + "s on the prompt \"" + answerPrompts[index].toUpperCase() + "\" and answered \"" + usedWords[index].toUpperCase() + "\".</p><p>Your longest streak was " + Math.max(...answerStreaks) + ".</p>";
 
         saveStateHandler();
-        retrieveHandler();
     }
 
     // make sure the text input is focused when clicking anywhere in the parent div
@@ -377,51 +381,111 @@ function setup() {
 
     
     
-    // for (let i = 0; i < theButtons.length; i++) {
-    //     theButtons[i].addEventListener("click", saveStateHandler);
-    // }
-
-    // the callback function
+    // uncomment the below line to clear the saved settings and coins for testing purposes
+    // localStorage.clear();
+    
+    // save game settings and coin amount
     function saveStateHandler() {
         
-        // let buttonID = this.parentElement.id;
-        // let inputValue = this.parentElement.querySelector("input").value;
-        // console.log(inputValue);
-
+        // save the values to local storage if they are not default values
         if (coins !== 0) {
-            // Save the value to local storage
             localStorage.setItem("coins", coins);
-            // Reset input value
-            coins = 0;
+        }
+
+        if (difficulty !== 1) {
+            localStorage.setItem("difficulty", difficulty);
+        }
+
+        if (document.querySelector("#dropdown").value !== "normal") {
+            localStorage.setItem("dictionary", document.querySelector("#dropdown").value);
+        }
+
+        if (volume !== 10) {
+            localStorage.setItem("volume", volume);
         }
     }
 
-    // callBack function
+    // retrieve game settings and coin amount
     function retrieveHandler() {
-        // for (let [key, value] of Object.entries(localStorage)) {
-        //     let textBox = document.querySelector(div[data-ref=${key}]);
-        //     textBox.innerHTML = value;
-        // }
-        coins = Number(localStorage.getItem("coins"));
-        document.querySelector(".coins p").textContent = "coins: " + coins;
+        
+        // once again check to see if the settings are not default or null and update the displayed settings to match the local saves
+        let localCoins = Number(localStorage.getItem("coins"));
+        if (localCoins !== 0) {
+            coins = localCoins;
+            document.querySelector(".coins p").textContent = "coins: " + coins;
+        }
+        
+        let localDifficulty = Number(localStorage.getItem("difficulty"));
+        if (localDifficulty !== 0) {
+            difficulty = localDifficulty;
+            document.querySelector(".difficulty p").textContent = "difficulty: " + difficulty;
+            document.querySelector(".slider").value = difficulty;
+        }
+        
+        let localDictionary = localStorage.getItem("dictionary");
+        if (localDictionary !== null && localDictionary !== "") {
+            document.querySelector("#dropdown").value = localDictionary;
+        }
+        
+        let localVolume = Number(localStorage.getItem("volume"));
+        if (localVolume) {
+            // volume = localVolume;
+            changeVolume(localVolume * 10)
+            document.querySelector(".volume-slider").value = localVolume * 10;
+        }
     } 
     
     retrieveHandler();
 
+    // settings menu open and close animations
     let settingsOpen = false;
     document.querySelector(".settings-button").addEventListener("click", function () {
+        sound1.play();
         const settings = document.querySelector(".settings");
         if (!settingsOpen) {
             settings.style.display = "flex";
             setTimeout(function() {
                 settings.style.transform = "translateY(0)";
+                document.querySelector(".slider").style.backgroundColor = "var(--secondary)";
+                document.querySelector("select").style.backgroundColor = "var(--secondary)";
+                document.querySelector("select").style.color = "var(--primary)";
+                document.querySelector(".coins").style.color = "var(--secondary)";
+                document.querySelector(".timer").style.color = "var(--secondary)";
+                document.querySelector(".dictionaries").style.color = "var(--secondary)";
+                document.querySelector(".difficulty").style.color = "var(--secondary)";
                 settingsOpen = true;
             }, 5)
         }
         else {
             settings.style.transform = "translateY(-100vh)";
-            // settings.style.display = "none";
+            document.querySelector(".slider").style.backgroundColor = "var(--primary)";
+            document.querySelector("select").style.backgroundColor = "var(--primary)";
+            document.querySelector("select").style.color = "var(--secondary)";
+            document.querySelector(".coins").style.color = "var(--primary)";
+            document.querySelector(".timer").style.color = "var(--primary)";
+            document.querySelector(".dictionaries").style.color = "var(--primary)";
+            document.querySelector(".difficulty").style.color = "var(--primary)";
             settingsOpen = false;
         }
     })
+
+    // change the game volume based on the volume slider value
+    document.querySelector(".volume-slider").addEventListener("change", function () {
+        changeVolume(this.value);     
+        sound1.play();
+        saveStateHandler();
+    })
+
+    function changeVolume(value) {
+        volume = value / 10;
+        
+        sound1.volume = volume;
+        sound2.volume = volume;
+        soundFire.volume = volume;
+        soundCoin1.volume = volume;
+        soundCoin2.volume = volume;
+        soundCoin3.volume = volume;
+        soundIncorrect.volume = volume;
+
+    }
 }
