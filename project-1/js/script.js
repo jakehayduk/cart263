@@ -37,7 +37,7 @@ function setup() {
     let coins = 0;
     let coinsChange = 0
     let coinSpin = 0;
-    let timerTime = 10;
+    let timerTime = 60;
     let winStreak = 0;
     let winStreakSound = false;
     let promptTime;
@@ -429,7 +429,6 @@ function setup() {
         
         let localVolume = Number(localStorage.getItem("volume"));
         if (localVolume) {
-            // volume = localVolume;
             changeVolume(localVolume * 10)
             document.querySelector(".volume-slider").value = localVolume * 10;
         }
