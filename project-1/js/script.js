@@ -93,11 +93,12 @@ function setup() {
             const answer = textInput.value.toLowerCase().replace(/\;|\:|\=|\.|\,|0|1|2|3|4|5|5|6|7|8|9|\"|\\|\]|\{|\[|\{|\//g, "");
             // check for includes consistent with all of our dictionary formatting
             const result = dict.includes("\n" + answer + "\r");
+            const result2 = dict.includes("\n" + answer + "\n");
             const checkInclude = answer.includes(prompt);
             const checkDuplicates = usedWords.includes(answer);
 
             // if the dictionary includes the typed answer, the typed answer includes the given prompt, is longer than 2 characters, and hasn't been typed already yet, the output is correct
-            if (result == true && checkInclude == true && answer.length > 2 && checkDuplicates == false) {
+            if (result == true || result2 == true && checkInclude == true && answer.length > 2 && checkDuplicates == false) {
                 usedWords.push(answer);
                 textInput.value = "";
                 
