@@ -395,6 +395,16 @@ option {
     transition: all 0.5s cubic-bezier(.12,.73,.33,.99);
     transform: translateY(-100vh);
     padding: 200px 5% 5% 5%;
+    justify-content: center;
+    align-items: center;
+}
+
+.settings p {
+    margin-bottom: 0.5em;
+}
+
+.settings ul {
+    margin-left: 1.5em;
 }
 
 .volume {

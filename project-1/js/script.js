@@ -182,16 +182,21 @@ function setup() {
                         let lastTime = 0;
                         function updateCoin(currentTime) {
                             if (!coinExists) return;
-                            let deltaTime = currentTime - lastTime;
-                            // change the coin's velocity by a negative gravitational accelerant constant
-                            coinVY += -0.00004 * deltaTime;
-                            // update the x and y positions based on the velocities
-                            coinY += coinVY;
-                            coinX += coinVX - 2.5;
-                            // update the element position
-                            newCoin.style.bottom = rect.bottom + coinY + "px";
-                            newCoin.style.left = rect.left + coinX + "px";
 
+                            if (lastTime) {
+                                const deltaTime = (currentTime - lastTime) / 1000;
+
+                                // change the coin's velocity by a negative gravitational accelerant constant
+                                coinVY += -20 * deltaTime;
+                                // update the x and y positions based on the velocities
+                                coinY += coinVY;
+                                coinX += coinVX - 2.5;
+                                // update the element position
+                                newCoin.style.bottom = rect.bottom + coinY + "px";
+                                newCoin.style.left = rect.left + coinX + "px";
+                            }
+                           
+                            lastTime = currentTime;
                             
                             requestAnimationFrame(updateCoin);
                         }
@@ -401,7 +406,7 @@ function setup() {
             localStorage.setItem("difficulty", difficulty);
         }
 
-        if (document.querySelector("#dropdown").value !== "normal") {
+        if (document.querySelector("#dropdown").value) {
             localStorage.setItem("dictionary", document.querySelector("#dropdown").value);
         }
 
