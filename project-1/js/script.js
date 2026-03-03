@@ -93,6 +93,7 @@ function setup() {
             const answer = textInput.value.toLowerCase().replace(/\;|\:|\=|\.|\,|0|1|2|3|4|5|5|6|7|8|9|\"|\\|\]|\{|\[|\{|\//g, "");
             // check for includes consistent with all of our dictionary formatting
             const result = dict.includes("\n" + answer + "\r");
+            // simmilar check but for systems using LF line break formatting (GitHub) instead of CLRF like the above
             const result2 = dict.includes("\n" + answer + "\n");
             const checkInclude = answer.includes(prompt);
             const checkDuplicates = usedWords.includes(answer);
@@ -188,7 +189,7 @@ function setup() {
                                 const deltaTime = (currentTime - lastTime) / 1000;
 
                                 // change the coin's velocity by a negative gravitational accelerant constant
-                                coinVY += -20 * deltaTime;
+                                coinVY += -18 * deltaTime;
                                 // update the x and y positions based on the velocities
                                 coinY += coinVY;
                                 coinX += coinVX - 2.5;
