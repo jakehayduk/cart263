@@ -496,7 +496,7 @@ option {
 
 @media only screen and (max-height: 800px) {
     .settings {
-        padding: 200px 5% 5% 5%;
+        padding: 150px 5% 5% 5%;
         justify-content: center;
         align-items: start;
         flex-direction: row-reverse;
