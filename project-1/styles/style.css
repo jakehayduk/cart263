@@ -394,8 +394,10 @@ option {
     transition: all 0.5s cubic-bezier(.12,.73,.33,.99);
     transform: translateY(-100vh);
     padding: 200px 5% 5% 5%;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
+    flex-direction: column;
+    gap: 30px;
 }
 
 .settings p {
@@ -489,5 +491,19 @@ option {
 
     .coins p span {
         display: none;
+    }
+}
+
+@media only screen and (max-height: 800px) {
+    .settings {
+        padding: 200px 5% 5% 5%;
+        justify-content: center;
+        align-items: start;
+        flex-direction: row-reverse;
+        gap: 30px;
+    }
+
+    .volume {
+        width: 200px;
     }
 }
