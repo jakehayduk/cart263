@@ -48,7 +48,7 @@ header {
     justify-content: space-between;
     align-items: center;
     border-bottom: 3px solid rgba(125, 125, 125, 0.3);
-    padding: 30px 10% 30px 5%;
+    padding: 30px 10% 30px 10%;
     font-weight: 500;
 }
 
@@ -68,7 +68,7 @@ header {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 30px;
+    /* gap: 30px; */
     animation: floating 3s infinite ease-in-out;
     padding-top: 150px;
 }
@@ -356,7 +356,6 @@ option {
 }
 
 .stats {
-    margin-top: 50px;
     padding: 10%;
     text-align: center;
     display: flex;
@@ -443,4 +442,52 @@ option {
     background: var(--tertiary);
     cursor: pointer;
     border-radius: var(--radius);
+}
+
+/* MEDIA QUERIES */
+
+@media only screen and (max-width: 1200px) {
+    html {
+        font-size: 16px;
+    }
+
+    .difficulty {
+        gap: 10px;
+        width: min-content;
+        white-space: nowrap;
+    }
+
+    .slider {
+        width: 100%;
+        height: 30px;
+        padding: 10px;
+    }
+
+    .slider::-webkit-slider-thumb {
+        width: 15px;
+        height: 15px;
+    }
+
+    .slider::-moz-range-thumb {
+        width: 15px;
+        height: 15px;
+    }
+
+    .dictionaries {
+        gap: 10px;
+    }
+
+    select {
+        padding: 0px;
+        width: calc-size(min-content, size + 10px); 
+        height: 30px;
+    }
+
+    header {
+        padding: 20px 5% 20px 5%;
+    }
+
+    .coins p span {
+        display: none;
+    }
 }

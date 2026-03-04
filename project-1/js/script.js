@@ -136,7 +136,7 @@ function setup() {
                 coins += coinCount;
                 coinsChange += coinCount;
                 
-                document.querySelector(".coins p").textContent = "coins: " + coins;
+                document.querySelector(".coins p").innerHTML = "<span>coins: </span>" + coins;
 
                 // coin icon spins 360 deg every correct answer
                 coinSpin += 360;
@@ -424,7 +424,7 @@ function setup() {
         let localCoins = Number(localStorage.getItem("coins"));
         if (localCoins !== 0) {
             coins = localCoins;
-            document.querySelector(".coins p").textContent = "coins: " + coins;
+            document.querySelector(".coins p").innerHTML = "<span>coins: </span>" + coins;
         }
         
         let localDifficulty = Number(localStorage.getItem("difficulty"));
