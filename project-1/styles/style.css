@@ -68,7 +68,6 @@ header {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    /* gap: 30px; */
     animation: floating 3s infinite ease-in-out;
     padding-top: 150px;
 }
@@ -442,6 +441,25 @@ option {
     width: 25px;
     height: 25px;
     background: var(--tertiary);
+    cursor: pointer;
+    border-radius: var(--radius);
+}
+
+.settings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.colors {
+    font: var(--font1);
+    width: min-content;
+    white-space: nowrap;
+    padding: 10px;
+    background-color: var(--tertiary);
+    color: var(--primary);
+    border: none;
+    outline: none;
     cursor: pointer;
     border-radius: var(--radius);
 }

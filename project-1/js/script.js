@@ -45,6 +45,7 @@ function setup() {
     let answerPrompts = [];
     let answerStreaks = []
 
+    // load sounds
     let sound1 = new Audio('./sounds/sound-1.mp3');
     let sound2 = new Audio('./sounds/sound-2.mp3');
     let soundFire = new Audio('./sounds/fire.mp3');
@@ -152,7 +153,6 @@ function setup() {
                     rect = document.querySelector(".prompt").getBoundingClientRect();
                 }
                 
-
                 displayText.innerHTML = "";
 
                 // create the amount of coins based on the coinCount variable
@@ -186,6 +186,7 @@ function setup() {
                             if (!coinExists) return;
 
                             if (lastTime) {
+                                // use a delta time to ensure consistant animation speed across devices
                                 const deltaTime = (currentTime - lastTime) / 1000;
 
                                 // change the coin's velocity by a negative gravitational accelerant constant
@@ -499,4 +500,15 @@ function setup() {
         soundIncorrect.volume = volume;
 
     }
+
+    // randomize game colours easter egg
+    document.querySelector(".colors").addEventListener("click", function () {
+        const color1 = "hsl(" + Math.floor(Math.random() * 360) + 1 + ", 100%, 87%)";
+        const color2 = "hsl(" + Math.floor(Math.random() * 360) + 1 + ", 74%, 12%)";
+        const color3 = "hsl(" + Math.floor(Math.random() * 360) + 1 + ", 68%, 51%)";
+
+        document.documentElement.style.setProperty("--primary", color1);
+        document.documentElement.style.setProperty("--secondary", color2);
+        document.documentElement.style.setProperty("--tertiary", color3);
+    })
 }
