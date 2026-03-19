@@ -22,6 +22,9 @@ class DrawingBoard {
     this.mouseOffsetX = parseInt(e.clientX - this.canvasBoundingRegion.x);
     this.mouseOffsetY = parseInt(e.clientY - this.canvasBoundingRegion.y);
     console.log(this.mouseOffsetX, this.mouseOffsetY);
+    VideoObj.updatePositionRect(this.mouseOffsetX, this.mouseOffsetY);
+    // mx = this.mouseOffsetX;
+    // my = this.mouseOffsetY;
     //differentiate which canvas
     //you can remove the console.logs /// 
     if(this.drawingBoardId ==="partA"){
