@@ -10,6 +10,53 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Bitcount+Single:wght@100..900&family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap"
         rel="stylesheet">
+    
+    <!-- Firebase CDN -->
+    <!-- <script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-database-compat.js"></script> -->
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyBdD0rHp9nriI124Ub1gdbsaLgR26Fo57s",
+            authDomain: "word-nerd-7bcf7.firebaseapp.com",
+            projectId: "word-nerd-7bcf7",
+            storageBucket: "word-nerd-7bcf7.firebasestorage.app",
+            messagingSenderId: "484707208649",
+            appId: "1:484707208649:web:4c96f5c167ec8ffffdec18",
+            measurementId: "G-L0N55SDFXG"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+    </script>
+
+    <!-- <script type="module">
+
+
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBdD0rHp9nriI124Ub1gdbsaLgR26Fo57s",
+            authDomain: "word-nerd-7bcf7.firebaseapp.com",
+            projectId: "word-nerd-7bcf7",
+            storageBucket: "word-nerd-7bcf7.firebasestorage.app",
+            messagingSenderId: "484707208649",
+            appId: "1:484707208649:web:4c96f5c167ec8ffffdec18",
+            measurementId: "G-L0N55SDFXG"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+    </script> -->
+    
     <script src="./js/bigrams.js"></script>
     <script src="./js/script.js"></script>
 </head>
