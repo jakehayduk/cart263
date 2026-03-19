@@ -25,6 +25,7 @@ window.onload = setup;
 
 function setup() {
     // global variables
+    console.log(db);
     let birds = "";
     let words = "";
     let dinos = "";

@@ -7,18 +7,17 @@
     <link rel="stylesheet" href="./styles/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Bitcount+Single:wght@100..900&family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap"
-        rel="stylesheet">
-    
-    <!-- Firebase CDN -->
-    <!-- <script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-database-compat.js"></script> -->
+    <link href="https://fonts.googleapis.com/css2?family=Bitcount+Single:wght@100..900&family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <!-- JQuery import -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
+        import { getAuth } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js'
+        import { getDatabase } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js'
         // TODO: Add SDKs for Firebase products that you want to use
         // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -37,25 +36,10 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
+
+        // Global database variable to reference in our other scripts
+        window.db = getDatabase(app);
     </script>
-
-    <!-- <script type="module">
-
-
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBdD0rHp9nriI124Ub1gdbsaLgR26Fo57s",
-            authDomain: "word-nerd-7bcf7.firebaseapp.com",
-            projectId: "word-nerd-7bcf7",
-            storageBucket: "word-nerd-7bcf7.firebasestorage.app",
-            messagingSenderId: "484707208649",
-            appId: "1:484707208649:web:4c96f5c167ec8ffffdec18",
-            measurementId: "G-L0N55SDFXG"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-    </script> -->
     
     <script src="./js/bigrams.js"></script>
     <script src="./js/script.js"></script>
