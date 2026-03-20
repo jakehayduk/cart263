@@ -22,9 +22,7 @@ class DrawingBoard {
     this.mouseOffsetX = parseInt(e.clientX - this.canvasBoundingRegion.x);
     this.mouseOffsetY = parseInt(e.clientY - this.canvasBoundingRegion.y);
     console.log(this.mouseOffsetX, this.mouseOffsetY);
-    VideoObj.updatePositionRect(this.mouseOffsetX, this.mouseOffsetY);
-    // mx = this.mouseOffsetX;
-    // my = this.mouseOffsetY;
+
     //differentiate which canvas
     //you can remove the console.logs /// 
     if(this.drawingBoardId ==="partA"){
@@ -38,6 +36,7 @@ class DrawingBoard {
     }
     if(this.drawingBoardId ==="partD"){
       console.log("in D")
+      this.objectsOnCanvas[0].updatePositionRect(this.mouseOffsetX, this.mouseOffsetY);
    }
   }
 
@@ -61,7 +60,9 @@ class DrawingBoard {
     }
     if(this.drawingBoardId ==="partD"){
       console.log("in D")
-      }
+      const randomCol = "rgb(" + Math.floor(Math.random() * 256) + ", " + Math.floor(Math.random() * 256) + ", " + Math.floor(Math.random() * 256) + ")";
+      this.objectsOnCanvas[0].changeColor(randomCol);
+    }
   }
   /* method to add obj to canvas */
   addObj(objToAdd) {
