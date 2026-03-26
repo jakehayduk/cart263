@@ -322,6 +322,7 @@ function setup() {
 
     function changeDictionary(value) {
         // change the dictionary depending on the selected value
+        
         if (value == "normal") {
             // the 'normal' dictionary includes all other dictionaries that contain valid words that are not proper noun dictionaries
             dictionary = words + birds + dinos + hyphens;
@@ -360,6 +361,7 @@ function setup() {
     let host = false;
 
     function joinGame() {
+        const dictName = document.querySelector("#dropdown").value;
         // display the game
         document.querySelector(".title-screen").style.display = "none";
         document.querySelector(".gameplay").style.display = "flex";
@@ -397,7 +399,6 @@ function setup() {
             if (playerArray[0].playerKey == playerId) {
                 console.log("you are host");
                 host = true;
-                const dictName = document.querySelector("#dropdown").value;
                 // set your host value to true
                 update(selfPlayerRef, {
                     host: true,
@@ -410,7 +411,7 @@ function setup() {
             else {
                 host = false;
                 console.log(playerArray[0].player.dictionary);
-                // changeDictionary(playerArray[0].)
+                changeDictionary(playerArray[0].player.dictionary)
                 document.querySelector(".slider").style.display = "none";
                 document.querySelector("#dropdown").style.display = "none";
                 document.querySelector(".dictionaries p").textContent = "dictionary: " + document.querySelector("#dropdown").value;
@@ -418,6 +419,20 @@ function setup() {
                 textInput.value = "";
                 displayText.innerHTML = "";
             }
+        })
+        document.querySelector("#dropdown").addEventListener("change", function () {
+            if (host === true) {
+                changeDictionary(this.value);
+                sound1.play();
+
+                saveStateHandler();
+
+                update(selfPlayerRef, {
+                    difficulty: difficulty,
+                    dictionary: dictName
+                })
+            }
+            
         })
     }
     
