@@ -21,21 +21,21 @@ class DrawingBoard {
     this.canvasBoundingRegion = this.canvas.getBoundingClientRect();
     this.mouseOffsetX = parseInt(e.clientX - this.canvasBoundingRegion.x);
     this.mouseOffsetY = parseInt(e.clientY - this.canvasBoundingRegion.y);
-    console.log(this.mouseOffsetX, this.mouseOffsetY);
+    //console.log(this.mouseOffsetX, this.mouseOffsetY);
 
     //differentiate which canvas
     //you can remove the console.logs /// 
     if(this.drawingBoardId ==="partA"){
-      console.log("in A")
+      //console.log("in A")
     }
     if(this.drawingBoardId ==="partB"){
-      console.log("in B")
+      //console.log("in B")
     }
     if(this.drawingBoardId ==="partC"){
-      console.log("in C")
+      //console.log("in C")
     }
     if(this.drawingBoardId ==="partD"){
-      console.log("in D")
+      //console.log("in D")
       this.objectsOnCanvas[0].updatePositionRect(this.mouseOffsetX, this.mouseOffsetY);
    }
   }
@@ -50,16 +50,52 @@ class DrawingBoard {
     //differentiate which canvas
    //you can remove the console.logs /// 
      if(this.drawingBoardId ==="partA"){
-      console.log("in A")
+      //console.log("in A")
+      if (e.shiftKey) {
+        let nearestIndex = -1;
+        let nearestDist = Infinity;
+
+        for (let i = 0; i < this.objectsOnCanvas.length; i++) {
+          let obj = this.objectsOnCanvas[i];
+          let dx = obj.x - this.mouseOffsetX;
+          let dy = obj.y - this.mouseOffsetY;
+          let dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < nearestDist) {
+            nearestDist = dist;
+            nearestIndex = i;
+          }
+        }
+
+        // remove if close enough
+        if (nearestIndex !== -1) {
+          this.objectsOnCanvas.splice(nearestIndex, 1);
+        }
+
+      } else {
+        // NORMAL CLICK = ADD NEW CIRCLE
+        let radius = Math.random() * 20 + 10;
+
+        let newCircle = new CircularObj(
+          this.mouseOffsetX,
+          this.mouseOffsetY,
+          radius,
+          "#" + Math.floor(Math.random() * 16777215).toString(16),
+          "#ffffff",
+          this.context
+        );
+
+        this.addObj(newCircle);
+      }
     }
     if(this.drawingBoardId ==="partB"){
-      console.log("in B")
+      //console.log("in B")
     }
     if(this.drawingBoardId ==="partC"){
-      console.log("in C")
+      //console.log("in C")
     }
     if(this.drawingBoardId ==="partD"){
-      console.log("in D")
+      //console.log("in D")
       const randomCol = "rgb(" + Math.floor(Math.random() * 256) + ", " + Math.floor(Math.random() * 256) + ", " + Math.floor(Math.random() * 256) + ")";
       this.objectsOnCanvas[0].changeColor(randomCol);
     }
@@ -77,10 +113,13 @@ class DrawingBoard {
   }
 
   /* method to add animate objects on canvas */
-  animate() {
+ animate(volume) { // Added volume parameter
+    // Clear the canvas so we don't get "trails"
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    
     for (let i = 0; i < this.objectsOnCanvas.length; i++) {
-     this.context.clearRect(0,0,this.canvas.width,this.canvas.height)
-     this.objectsOnCanvas[i].update();
+     // Pass the volume into the update method
+     this.objectsOnCanvas[i].update(volume); 
      this.objectsOnCanvas[i].display();
     }
   }

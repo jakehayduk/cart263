@@ -28,10 +28,17 @@ class FreeStyleObj {
       this.context.stroke(); //set the stroke
     }
 
-    update(){
-        //update freestyle
-       // console.log("free style update")
-       // this.x+=1;
-    }
+    update(volume) {
+    // 1. Oscillate: Change the angular speed or amplitude based on volume
+    // High volume makes the wave "wiggle" faster
+    this.angularSpeed = 0.05 + (volume * 0.001);
+    
+    // 2. Change Color: Use volume to affect the stroke color
+    let greenVal = Math.min(255, volume * 2);
+    this.stroke_color = `rgb(207, ${greenVal}, 255)`;
+
+    // 3. Arbitrary Animation: Vertical drifting
+    this.yOffset = 20 + Math.sin(Date.now() * 0.001) * 10;
+}
   }
   

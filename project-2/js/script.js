@@ -21,6 +21,34 @@
 
 "use strict";
 
+// Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
+        import { getAuth } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js'
+        import { getDatabase, get, set, ref, push, onDisconnect, remove } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js'
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyBdD0rHp9nriI124Ub1gdbsaLgR26Fo57s",
+            authDomain: "word-nerd-7bcf7.firebaseapp.com",
+            projectId: "word-nerd-7bcf7",
+            storageBucket: "word-nerd-7bcf7.firebasestorage.app",
+            messagingSenderId: "484707208649",
+            appId: "1:484707208649:web:4c96f5c167ec8ffffdec18",
+            measurementId: "G-L0N55SDFXG"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        // const analytics = getAnalytics(app);
+
+        // Global database variable to reference in our other scripts
+        window.db = getDatabase(app);
+        window.auth = getDatabase(app);
+
 window.onload = setup;
 
 function setup() {
@@ -326,9 +354,29 @@ function setup() {
     // set the timer to be the 
     let timer = timerTime;
     let gameOn = false;
-
+    let name;
+    let playerRef;
+    let newPlayerRef;
+    let playerId;
+    // function addPlayer() {
+        
+    // }
+    
     // click play button to start
     document.querySelector(".play-button").addEventListener("click", function () {
+        name = document.querySelector("#nameInput").value;
+        playerRef = ref(db, "players/");
+        newPlayerRef = push(playerRef);
+        playerId = newPlayerRef.key;
+
+        console.log(playerId);
+        set(newPlayerRef, {
+            name: name,
+            coins: coins
+        })
+
+        onDisconnect(ref(db, "players/" + playerId)).remove();
+
         sound2.play();
         gameStart();
         

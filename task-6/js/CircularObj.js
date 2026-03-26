@@ -1,20 +1,23 @@
 class CircularObj {
   constructor(x, y, radius, f_color, s_color, context) {
-    // We write instructions to set up a Flower here
-    // Position and size information
     this.x = x;
     this.y = y;
     this.radius = radius;
     this.fill_color = f_color;
     this.stroke_color = s_color;
     this.startAngle = 0;
-    this.endAngle = Math.PI * 2; //full rotation
+    this.endAngle = Math.PI * 2;
     this.context = context;
+
+    // animation properties
+    this.vx = (Math.random() * 2 - 1) * 2;
+    this.vy = (Math.random() * 2 - 1) * 2;
   }
 
   display() {
-    this.context.fillStyle = this.fill_color; // change the color we are using
-    this.context.strokeStyle = this.stroke_color; // change the color we are using
+    this.context.fillStyle = this.fill_color;
+    this.context.strokeStyle = this.stroke_color;
+
     this.context.beginPath();
     this.context.arc(
       this.x,
@@ -24,15 +27,26 @@ class CircularObj {
       this.endAngle,
       true
     );
-    this.context.fill(); // set the fill
-    this.context.lineWidth = 2; //change stroke
+    this.context.fill();
+    this.context.lineWidth = 2;
     this.context.closePath();
     this.context.stroke();
   }
 
   update() {
-    //update circle
-    //this.x += 1;
-    //console.log("circle update");
+    // simple movement
+    this.x += this.vx;
+    this.y += this.vy;
+
+    // bounce off canvas edges
+    let canvas = this.context.canvas;
+
+    if (this.x - this.radius < 0 || this.x + this.radius > canvas.width) {
+      this.vx *= -1;
+    }
+
+    if (this.y - this.radius < 0 || this.y + this.radius > canvas.height) {
+      this.vy *= -1;
+    }
   }
 }
