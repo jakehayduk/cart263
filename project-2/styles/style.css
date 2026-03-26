@@ -63,7 +63,7 @@ header {
     overflow: hidden;
 }
 
-.start {
+.title-screen {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -473,7 +473,7 @@ option {
     opacity: 0.5;
 }
 
-.play-button {
+.join-button {
     border: none;
     padding: 10px 15px 10px 15px;
     background-color: var(--tertiary);
@@ -486,7 +486,7 @@ option {
     border-radius: var(--radius);
 }
 
-.play-button:hover {
+.join-button:hover {
     transform: scale(1.05);
     filter: drop-shadow(0px 0px 20px var(--tertiary))
 }

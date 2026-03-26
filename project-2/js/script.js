@@ -355,25 +355,27 @@ function setup() {
     let gameOn = false;
     let name;
     let playerRef;
-    let newPlayerRef;
-    let allPlayersRef;
+    let selfPlayerRef;
     let playerId;
-    
-    // click play button to start
-    document.querySelector(".play-button").addEventListener("click", function () {
-        name = document.querySelector("#nameInput").value;
+    let host = false;
+
+    function joinGame() {
+        // display the game
+        document.querySelector(".title-screen").style.display = "none";
+        document.querySelector(".gameplay").style.display = "flex";
 
         // reference all the player nodes in Firebase
         playerRef = ref(db, "players/");
         // new player reference gets pushed into the database
-        newPlayerRef = push(playerRef);
+        selfPlayerRef = push(playerRef);
         // get your player ID
-        playerId = newPlayerRef.key;
+        playerId = selfPlayerRef.key;
 
         // set the base variables for your player in Firebase
-        set(newPlayerRef, {
+        set(selfPlayerRef, {
             name: name,
-            coins: coins
+            coins: coins,
+            host: false
         })
 
         // if you close the window or refresh the page, remove your player node from the database
@@ -382,50 +384,71 @@ function setup() {
         // this function fires when player values are updated
         onValue(playerRef, (snapshot) => {
 
-            const newArray = [];
+            const playerArray = [];
             // loop through the player objects and push them into a local array, along with the respective player keys
             snapshot.forEach((playerSnapshot) => {
                 const player = playerSnapshot.val();
                 const playerKey = playerSnapshot.key;
 
-                newArray.push({playerKey, player});
+                playerArray.push({playerKey, player});
             })
-
+            // console.log(playerArray);
             // if your player ID matches the player ID of the first player in the array we got from the database, it means you joined first or you are the only player who has joined, and you are the host or controller of the game
-            if (newArray[0].playerKey == playerId) {
+            if (playerArray[0].playerKey == playerId) {
                 console.log("you are host");
-
-                
+                host = true;
+                const dictName = document.querySelector("#dropdown").value;
+                // set your host value to true
+                update(selfPlayerRef, {
+                    host: true,
+                    difficulty: difficulty,
+                    dictionary: dictName
+                })
             }
 
+            // everyone else
             else {
-
+                host = false;
+                console.log(playerArray[0].player.dictionary);
+                // changeDictionary(playerArray[0].)
+                document.querySelector(".slider").style.display = "none";
+                document.querySelector("#dropdown").style.display = "none";
+                document.querySelector(".dictionaries p").textContent = "dictionary: " + document.querySelector("#dropdown").value;
+                textInput.focus();
+                textInput.value = "";
+                displayText.innerHTML = "";
             }
         })
+    }
+    
+    // click play button to start
+    document.querySelector(".join-button").addEventListener("click", function () {
+        name = document.querySelector("#nameInput").value;
+        joinGame();
 
         sound2.play();
-        gameStart();
+        // gameStart();
         
         // The game timer
-        timer = timerTime;
-        const timerInterval = setInterval(myTimer, 1000);
-        function myTimer() {
-            if (timer > 0 && gameOn == true) {
-                timer--;
-            }
+        // timer = timerTime;
+        // const timerInterval = setInterval(myTimer, 1000);
+        // function myTimer() {
+        //     if (timer > 0 && gameOn == true) {
+        //         timer--;
+        //     }
 
-            if (timer == 0) {
-                myStopFunction();
-                gameEnd();
-                timer = timerTime;
-            }
+        //     if (timer == 0) {
+        //         myStopFunction();
+        //         gameEnd();
+        //         timer = timerTime;
+        //     }
 
-            document.querySelector(".timer").textContent = timer;
-        }
+        //     document.querySelector(".timer").textContent = timer;
+        // }
 
-        function myStopFunction() {
-            clearInterval(timerInterval);
-        }
+        // function myStopFunction() {
+        //     clearInterval(timerInterval);
+        // }
     })
 
     // hide the start menu and display the game, reset variables, call newPrompt and focus on the text field
