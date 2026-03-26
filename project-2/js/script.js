@@ -322,7 +322,10 @@ function setup() {
 
     function changeDictionary(value) {
         // change the dictionary depending on the selected value
-        
+        console.log(value);
+        if (host === false) {
+            document.querySelector("#dropdown").value = value;
+        }
         if (value == "normal") {
             // the 'normal' dictionary includes all other dictionaries that contain valid words that are not proper noun dictionaries
             dictionary = words + birds + dinos + hyphens;
@@ -409,7 +412,7 @@ function setup() {
             // everyone else
             else {
                 host = false;
-                console.log(playerArray[0].player.dictionary);
+                // console.log(playerArray[0].player.dictionary);
                 changeDictionary(playerArray[0].player.dictionary)
                 document.querySelector(".slider").style.display = "none";
                 document.querySelector("#dropdown").style.display = "none";
