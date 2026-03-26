@@ -25,7 +25,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
         import { getAuth } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js'
-        import { getDatabase, get, set, ref, push, onDisconnect, remove } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js'
+        import { getDatabase, get, set, ref, push, onDisconnect, remove, update, onValue } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js'
         // TODO: Add SDKs for Firebase products that you want to use
         // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -53,7 +53,6 @@ window.onload = setup;
 
 function setup() {
     // global variables
-    console.log(db);
     let birds = "";
     let words = "";
     let dinos = "";
@@ -357,25 +356,52 @@ function setup() {
     let name;
     let playerRef;
     let newPlayerRef;
+    let allPlayersRef;
     let playerId;
-    // function addPlayer() {
-        
-    // }
     
     // click play button to start
     document.querySelector(".play-button").addEventListener("click", function () {
         name = document.querySelector("#nameInput").value;
+
+        // reference all the player nodes in Firebase
         playerRef = ref(db, "players/");
+        // new player reference gets pushed into the database
         newPlayerRef = push(playerRef);
+        // get your player ID
         playerId = newPlayerRef.key;
 
-        console.log(playerId);
+        // set the base variables for your player in Firebase
         set(newPlayerRef, {
             name: name,
             coins: coins
         })
 
+        // if you close the window or refresh the page, remove your player node from the database
         onDisconnect(ref(db, "players/" + playerId)).remove();
+
+        // this function fires when player values are updated
+        onValue(playerRef, (snapshot) => {
+
+            const newArray = [];
+            // loop through the player objects and push them into a local array, along with the respective player keys
+            snapshot.forEach((playerSnapshot) => {
+                const player = playerSnapshot.val();
+                const playerKey = playerSnapshot.key;
+
+                newArray.push({playerKey, player});
+            })
+
+            // if your player ID matches the player ID of the first player in the array we got from the database, it means you joined first or you are the only player who has joined, and you are the host or controller of the game
+            if (newArray[0].playerKey == playerId) {
+                console.log("you are host");
+
+                
+            }
+
+            else {
+
+            }
+        })
 
         sound2.play();
         gameStart();
