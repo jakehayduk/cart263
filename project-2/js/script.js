@@ -313,12 +313,12 @@ function setup() {
     })
 
     // when something is selected from the dictionaries dropdown list
-    document.querySelector("#dropdown").addEventListener("change", function () {
-        changeDictionary(this.value)
-        sound1.play();
+    // document.querySelector("#dropdown").addEventListener("change", function () {
+    //     changeDictionary(this.value)
+    //     sound1.play();
 
-        saveStateHandler();
-    })
+    //     saveStateHandler();
+    // })
 
     function changeDictionary(value) {
         // change the dictionary depending on the selected value
@@ -361,7 +361,6 @@ function setup() {
     let host = false;
 
     function joinGame() {
-        const dictName = document.querySelector("#dropdown").value;
         // display the game
         document.querySelector(".title-screen").style.display = "none";
         document.querySelector(".gameplay").style.display = "flex";
@@ -374,10 +373,12 @@ function setup() {
         playerId = selfPlayerRef.key;
 
         // set the base variables for your player in Firebase
+        const dictName = document.querySelector("#dropdown").value;
         set(selfPlayerRef, {
             name: name,
             coins: coins,
-            host: false
+            host: false,
+            dictionary: dictName
         })
 
         // if you close the window or refresh the page, remove your player node from the database
@@ -401,9 +402,7 @@ function setup() {
                 host = true;
                 // set your host value to true
                 update(selfPlayerRef, {
-                    host: true,
-                    difficulty: difficulty,
-                    dictionary: dictName
+                    host: true
                 })
             }
 
@@ -420,6 +419,8 @@ function setup() {
                 displayText.innerHTML = "";
             }
         })
+
+        // only update the dictionary if you are the host
         document.querySelector("#dropdown").addEventListener("change", function () {
             if (host === true) {
                 changeDictionary(this.value);
@@ -427,9 +428,9 @@ function setup() {
 
                 saveStateHandler();
 
+                // save the dictionary to your Firebase player node
                 update(selfPlayerRef, {
-                    difficulty: difficulty,
-                    dictionary: dictName
+                    dictionary: this.value
                 })
             }
             
