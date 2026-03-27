@@ -22,32 +22,32 @@
 "use strict";
 
 // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
-        import { getAuth } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js'
-        import { getDatabase, get, set, ref, push, onDisconnect, remove, update, onValue } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js'
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
+import { getAuth } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js'
+import { getDatabase, get, set, ref, push, onDisconnect, remove, update, onValue } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js'
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
-        // Your web app's Firebase configuration
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-        const firebaseConfig = {
-            apiKey: "AIzaSyBdD0rHp9nriI124Ub1gdbsaLgR26Fo57s",
-            authDomain: "word-nerd-7bcf7.firebaseapp.com",
-            projectId: "word-nerd-7bcf7",
-            storageBucket: "word-nerd-7bcf7.firebasestorage.app",
-            messagingSenderId: "484707208649",
-            appId: "1:484707208649:web:4c96f5c167ec8ffffdec18",
-            measurementId: "G-L0N55SDFXG"
-        };
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+    apiKey: "AIzaSyBdD0rHp9nriI124Ub1gdbsaLgR26Fo57s",
+    authDomain: "word-nerd-7bcf7.firebaseapp.com",
+    projectId: "word-nerd-7bcf7",
+    storageBucket: "word-nerd-7bcf7.firebasestorage.app",
+    messagingSenderId: "484707208649",
+    appId: "1:484707208649:web:4c96f5c167ec8ffffdec18",
+    measurementId: "G-L0N55SDFXG"
+};
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        // const analytics = getAnalytics(app);
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+// const analytics = getAnalytics(app);
 
-        // Global database variable to reference in our other scripts
-        window.db = getDatabase(app);
-        window.auth = getDatabase(app);
+// Global database variable to reference in our other scripts
+window.db = getDatabase(app);
+window.auth = getDatabase(app);
 
 window.onload = setup;
 
@@ -322,7 +322,6 @@ function setup() {
 
     function changeDictionary(value) {
         // change the dictionary depending on the selected value
-        console.log(value);
         if (host === false) {
             document.querySelector("#dropdown").value = value;
         }
@@ -343,16 +342,6 @@ function setup() {
             dictionary = moviesShows;
         }
     }
-
-    // update the difficulty based on the slider value
-    document.querySelector(".slider").addEventListener("change", function () {
-        document.querySelector(".difficulty p").textContent = "difficulty: " + this.value;
-
-        difficulty = this.value;
-        sound1.play();
-
-        saveStateHandler();
-    })
 
     // set the timer to be the 
     let timer = timerTime;
@@ -381,7 +370,8 @@ function setup() {
             name: name,
             coins: coins,
             host: false,
-            dictionary: dictName
+            dictionary: dictName,
+            difficulty: difficulty
         })
 
         // if you close the window or refresh the page, remove your player node from the database
@@ -398,7 +388,7 @@ function setup() {
 
                 playerArray.push({playerKey, player});
             })
-            // console.log(playerArray);
+            
             // if your player ID matches the player ID of the first player in the array we got from the database, it means you joined first or you are the only player who has joined, and you are the host or controller of the game
             if (playerArray[0].playerKey == playerId) {
                 console.log("you are host");
@@ -412,8 +402,8 @@ function setup() {
             // everyone else
             else {
                 host = false;
-                // console.log(playerArray[0].player.dictionary);
-                changeDictionary(playerArray[0].player.dictionary)
+                changeDictionary(playerArray[0].player.dictionary);
+                difficulty = playerArray[0].player.difficulty;
                 document.querySelector(".slider").style.display = "none";
                 document.querySelector("#dropdown").style.display = "none";
                 document.querySelector(".dictionaries p").textContent = "dictionary: " + document.querySelector("#dropdown").value;
@@ -436,7 +426,23 @@ function setup() {
                     dictionary: this.value
                 })
             }
-            
+        })
+
+        // update the difficulty based on the slider value
+        document.querySelector(".slider").addEventListener("change", function () {
+            if (host === true) {
+                document.querySelector(".difficulty p").textContent = "difficulty: " + this.value;
+
+                difficulty = this.value;
+                sound1.play();
+
+                saveStateHandler();
+
+                // save the difficulty to your Firebase player node
+                update(selfPlayerRef, {
+                    difficulty: difficulty
+                })
+            }
         })
     }
     
@@ -447,27 +453,15 @@ function setup() {
 
         sound2.play();
         // gameStart();
-        
-        // The game timer
-        // timer = timerTime;
-        // const timerInterval = setInterval(myTimer, 1000);
-        // function myTimer() {
-        //     if (timer > 0 && gameOn == true) {
-        //         timer--;
-        //     }
+    })
 
-        //     if (timer == 0) {
-        //         myStopFunction();
-        //         gameEnd();
-        //         timer = timerTime;
-        //     }
+    document.querySelector("#nameInput").addEventListener("keydown", function (e) {
+        if (e.which === 13) {
+            name = document.querySelector("#nameInput").value;
+            joinGame();
 
-        //     document.querySelector(".timer").textContent = timer;
-        // }
-
-        // function myStopFunction() {
-        //     clearInterval(timerInterval);
-        // }
+            sound2.play();
+        }
     })
 
     // hide the start menu and display the game, reset variables, call newPrompt and focus on the text field
@@ -569,7 +563,7 @@ function setup() {
             changeVolume(localVolume * 10)
             document.querySelector(".volume-slider").value = localVolume * 10;
         }
-    } 
+    }
 
 
     // settings menu open and close animations
