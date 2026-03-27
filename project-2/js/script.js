@@ -404,6 +404,7 @@ function setup() {
                 host = false;
                 changeDictionary(playerArray[0].player.dictionary);
                 difficulty = playerArray[0].player.difficulty;
+                document.querySelector(".difficulty p").textContent = "difficulty: " + difficulty;
                 document.querySelector(".slider").style.display = "none";
                 document.querySelector("#dropdown").style.display = "none";
                 document.querySelector(".dictionaries p").textContent = "dictionary: " + document.querySelector("#dropdown").value;
