@@ -491,6 +491,32 @@ option {
     filter: drop-shadow(0px 0px 20px var(--tertiary))
 }
 
+.players-container {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    left: 30px;
+    top: 130px;
+    font-size: 1.2rem;
+    gap: 10px;
+}
+
+.player-item {
+    display: block;
+    padding: 15px;
+    background-color: rgba(125, 125, 125, 0.1);
+    border-radius: var(--radius);
+}
+
+.player-crown {
+    position: absolute;
+    width: 30px;
+    left: -10px;
+    top: -10px;
+    rotate: -30deg;
+    filter: drop-shadow(0px 0px 10px rgba(255, 200, 100, 0.6));
+}
+
 /* MEDIA QUERIES */
 
 @media only screen and (max-width: 1300px) {

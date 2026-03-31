@@ -381,13 +381,32 @@ function setup() {
         onValue(playerRef, (snapshot) => {
 
             const playerArray = [];
+            const playerContainer = document.querySelector(".players-container");
+            let htmlContent = "";
             // loop through the player objects and push them into a local array, along with the respective player keys
             snapshot.forEach((playerSnapshot) => {
                 const player = playerSnapshot.val();
                 const playerKey = playerSnapshot.key;
 
                 playerArray.push({playerKey, player});
+
+                if (playerKey == playerId && player.host === false) {
+                    htmlContent += "<div class='player-item' style='background-color: var(--primary); color: var(--secondary)'>" + player.name + " &bullet; " + player.coins + "</div>"
+                }
+                else if (player.host === true && playerKey !== playerId) {
+                    htmlContent += "<div class='player-item'>" + player.name + " &bullet; " + player.coins + "<img src='./images/crown.png' class='player-crown'></div>"
+                }
+                else if (player.host === true && playerKey == playerId) {
+                    htmlContent += "<div class='player-item' style='background-color: var(--primary); color: var(--secondary)'>" + player.name + " &bullet; " + player.coins + "<img src='./images/crown.png' class='player-crown'></div>"
+                }
+                else {
+                    htmlContent += "<div class='player-item'>" + player.name + " &bullet; " + player.coins + "</div>"
+                }
+                
+                // MAYBE IT WOULD BE COOL TO HAVE A FEW PRESET AVATARS THAT WE CAN CHOOSE FROM TO DISPLAY IN THE GAME
             })
+
+            playerContainer.innerHTML = htmlContent;
             
             // if your player ID matches the player ID of the first player in the array we got from the database, it means you joined first or you are the only player who has joined, and you are the host or controller of the game
             if (playerArray[0].playerKey == playerId) {
@@ -412,6 +431,8 @@ function setup() {
                 textInput.value = "";
                 displayText.innerHTML = "";
             }
+
+            console.log(playerArray);
         })
 
         // only update the dictionary if you are the host
