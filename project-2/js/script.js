@@ -416,6 +416,9 @@ function setup() {
                 update(selfPlayerRef, {
                     host: true
                 })
+
+                document.querySelector(".play-button").style.display = "block";
+                document.querySelector(".waiting").style.display = "none";
             }
 
             // everyone else
@@ -430,6 +433,8 @@ function setup() {
                 textInput.focus();
                 textInput.value = "";
                 displayText.innerHTML = "";
+                document.querySelector(".play-button").style.display = "none";
+                document.querySelector(".waiting").style.display = "block";
             }
 
             console.log(playerArray);
@@ -463,6 +468,14 @@ function setup() {
                 // save the difficulty to your Firebase player node
                 update(selfPlayerRef, {
                     difficulty: difficulty
+                })
+            }
+        })
+
+        document.querySelector(".play-button").addEventListener("click", function() {
+            if (host === true) {
+                update(selfPlayerRef, {
+                    inGame: true
                 })
             }
         })
