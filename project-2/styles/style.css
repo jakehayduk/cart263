@@ -110,10 +110,10 @@ header {
     transition: color 0.2s;
     white-space: nowrap;
     overflow: hidden;
-    display: inline;
     position: fixed;
     bottom: 30px;
     opacity: 0.3;
+    display: none;
 }
 
 .displayText {
@@ -130,9 +130,9 @@ header {
     transition: color 0.2s;
     white-space: nowrap;
     overflow: hidden;
-    display: inline;
+    display: none;
     height: 3rem;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
 }
@@ -202,10 +202,12 @@ header {
     font-weight: 500;
     position: relative;
     z-index: 1;
+    display: none;
 }
 
 .prompt-container {
     position: relative;
+    display: none;
 }
 
 .fire {
@@ -515,6 +517,24 @@ option {
     top: -10px;
     rotate: -30deg;
     filter: drop-shadow(0px 0px 10px rgba(255, 200, 100, 0.6));
+}
+
+.play-button {
+    border: none;
+    padding: 10px 15px 10px 15px;
+    background-color: var(--tertiary);
+    color: var(--secondary);
+    font-family: var(--font1);
+    font-weight: 600;
+    font-size: 1.5em;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: var(--radius);
+}
+
+.play-button:hover {
+    transform: scale(1.05);
+    filter: drop-shadow(0px 0px 20px var(--tertiary))
 }
 
 /* MEDIA QUERIES */
