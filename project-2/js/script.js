@@ -441,7 +441,6 @@ function setup() {
             
             if (playerArray[0].player.startGame == true) {
                 startGame();
-                console.log(playerArray[0].playerKey);
                 update(ref(db, "players/" + playerArray[0].playerKey), {
                     startGame: false
                 })
@@ -492,7 +491,11 @@ function setup() {
             gameOn = true;
             document.querySelector(".slider").style.display = "none";
             document.querySelector(".play-button").style.display = "none";
+            document.querySelector(".waiting").style.display = "none";
             document.querySelector("#dropdown").style.display = "none";
+            document.querySelector(".prompt-container").style.display = "flex";
+            document.querySelector("#textInput").style.display = "inline";
+            document.querySelector(".displayText").style.display = "inline";
             document.querySelector(".dictionaries p").textContent = "dictionary: " + document.querySelector("#dropdown").value;
             textInput.focus();
             textInput.value = "";
@@ -504,7 +507,7 @@ function setup() {
             winStreak = 0;
             coinsChange = 0;
             document.querySelector(".fire").style.display = "none";
-            // newPrompt();
+            newPrompt();
         }
     }
     
