@@ -1,0 +1,456 @@
+
+Lungs
+Liver
+Kidney
+Gallbladder
+Large intestine
+Small intestine
+Skin
+Stomach
+Pancreas
+Bladder
+Chest
+Sternum
+Ribs
+Cervical ribs
+Spine
+Cervical vertebrae
+Thoracic vertebrae
+Lumbar vertebrae
+Sacrum
+Coccyx
+Skull
+Cranial Bones
+Occipital bone
+Parietal bones
+Frontal bone
+Temporal bones
+Ethmoid bone
+Sphenoid bone
+Facial Bones
+Lacrimal bones
+Maxillae
+Nasal bones
+Palatine bones
+Zygomatic bones
+Inferior nasal concha
+Mandible
+Hyoid Bone
+Vomer
+Ear Bones
+Malleus
+Incus
+Stapes
+Pectoral Girdle
+Clavicle
+Scapula
+Arms
+Humerus
+Radius
+Ulna
+Carpals
+Phanages
+Metacarpals
+Pelvic Girdle
+Hip bones
+Legs
+Femur
+Tibia
+Fibula
+Patella
+Tarsals
+Phalanges
+Metatarsals
+
+
+Frontalis
+Depressor supercilii
+Procerus
+Nasalis
+Zygomaticus minor
+Zygomaticus major
+Masseter
+Depressor anguli oris
+Depressor labii inferioris
+Platysma
+Mentalis
+Risorius
+Orbicularis oris
+Levator superioris
+Levator labii superioris alaque nasi
+Temporalis
+Orbicularis oculi
+Corrugator
+Omohyoid
+Sternohyoid
+Sternocleidomastoid
+Trapezius
+Deltoid anterior head
+Deltoid middle head
+Serratus anterior
+External oblique
+Tendinous inscriptions
+Rectus abdominis
+Tensor fasciae latae
+Saratorius
+Pectineus
+Adductor longus
+Iliopsoas
+Gracilis
+Gastrocnemius
+Tibialis anterior
+Peroneus longus
+Extensor digitorum langus
+Soleus
+Pectoralis major
+Pectoralis minor
+Biceps brachii short head
+Biceps brachii long head
+Brachialis
+Brachioradialis
+Palmaris longus
+Extensor carpi ulnaris
+Flexor carpi ulnaris
+Abductor pollicis longus
+Extensor pollicis brevis
+Extensor pollicis longus
+Pronatur teres
+Rectus femoris
+Vastus lateralis
+Vastus medialis
+Teres minor
+Rhomboid major
+Infraspinatus
+Teres major
+Posterior head
+Gluteus medius
+Gluteus maximus
+Gastrocneus
+Peroneus brevis
+Flexor hallucis longus
+Triceps brachii long head
+Medial hand
+Triceps brachii lateral head
+Latissimus dorsi
+Erector spinae
+Thoracolumbar fascia
+Ilotibial band
+Biceos femoris
+Semitendinosus
+Adductor magnus
+Semimembranosus
+
+Teres minor tendons
+Infraspinatus tendons
+Supraspinatus tendons
+Subscapularis tendons
+Deltoid tendons
+Biceps tendons		
+Triceps tendons		
+Brachioradialis tendons		
+Supinator tendons		
+Flexor carpi radialis tendons		
+Flexor carpi ulnaris tendons		
+Extensor carpi radialis tendons		
+Extensor carpi radialis brevis tendons		
+Iliopsoas tendons
+Obturator internus tendons		
+Adductor longus, brevis magnus tendons		
+Gluteus maximus		
+Gluteus medius tendons		
+Quadriceps tendons(patellar tendon/ patella)		
+Hamstring tendons		
+Sartorius tendons		
+Gastrocnemius tendons		
+Achilles tendon		
+Soleus tendons		
+Tibialis anterior tendons		
+Peroneus longus tendons		
+Flexor digitorum longus tendons		
+Interosseus tendons		
+Flexor digitorum profundus tendons		
+Abductor digiti minimi tendons		
+Opponens pollicis tendons		
+Flexor pollicis longus tendons		
+Extensor pollicis tendons		
+abductor pollicis tendons		
+Flexor hallucis longus tendons		
+Flexor digitorum brevis tendons		
+Lumbrical tendons		
+Abductor hallucis tendons		
+Flexor digitorum longus tendons		
+Abductor digiti minimi tendons		
+Ocular tendons
+Levator palpebrae tendons
+Masseter tendons
+Temporalis tendons
+Trapezius tendons
+Sternocleidomastoid tendons		
+Semispinalis capitis	
+Splenius capitis tendons
+Mylohyoid	
+Thyrohyoid tendons
+Rectus abdominis tendons
+External oblique tendons
+Transversus abdominis tendons
+Erector spinae tendons
+
+
+Coronary sinus
+Great cardiac vein
+Oblique vein of left atrium
+Middle cardiac vein
+Small cardiac vein
+Pulmonary vein
+Superior vena cava
+Brachiocephalic vein
+Inferior thyroid vein
+Inferior laryngeal vein
+Pericardial vein
+Pericardiophrenic vein
+Bronchial vein
+Vertebral vein
+Occipital vein
+Anterior vertebral vein
+Deep cervical vein
+Internal thoracic veins
+Superior epigastric vein
+Musculophrenic vein
+Anterior intercostal vein
+Supreme intercostal vein
+Internal jugular vein
+Lingual vein
+Dorsal lingual vein
+Sublingual vein
+Deep lingual vein
+Superior thyroid vein
+Middle thyroid vein
+Sternocleidomastoid vein
+Superior laryngeal vein
+Facial vein
+Angular vein
+Supratrochlear vein
+Supra-orbital vein
+External nasal vein
+Deep facial vein
+External palatine vein
+Submental vein
+Retromandibular vein
+Superficial temporal vein
+Middle temporal vein
+Transverse facial vein
+Maxillary veins
+Pterygoid plexus
+External jugular vein
+Posterior auricular vein
+Anterior jugular vein
+Suprascapular vein
+Transverse cervical vein
+Dural venous sinuses
+Transverse sinus
+Confluence of sinuses
+Marginal sinus
+Occipital sinus
+Petrosquamous sinus
+Sigmoid sinus
+Superior sagittal sinus
+Inferior sagittal sinus
+Straight sinus
+Inferior petrosal sinus
+Superior petrosal sinus
+Cavernous sinus
+Sphenoparietal sinus
+Diploic vein
+Emissary vein
+Cerebral vein
+Superficial cerebral vein
+Internal cerebral vein
+Basal vein
+Great cerebral vein
+Veins of brainstem
+Cerebellar vein
+Orbital vein
+Superior ophthalmic vein
+Nasofrontal vein
+Ethmoidal vein
+Lacrimal vein
+Vorticose vein
+Ciliary vein
+Central retinal vein
+Episcleral vein
+Inferior ophthalmic vein
+Azygos vein
+Posterior intercostal vein
+Intervertebral vein
+Veins of vertebral column
+Anterior internal vertebral venous plexus
+Basivertebral vein
+Anterior spinal vein
+Posterior spinal vein
+Veins of upper limb
+Subclavian vein
+Axillary vein
+Subscapular vein
+Circumflex scapular vein
+Thoracodorsal vein
+Posterior circumflex humeral vein
+Anterior circumflex humeral vein
+Lateral thoracic vein
+Superficial vein of upper limb
+Cephalic vein
+Basilic vein
+Median cubital vein
+Dorsal venous network of hand
+Deep vein of upper limb
+Brachial vein
+Ulnar vein
+Radial vein
+Inferior vena cava
+Inferior phrenic vein
+Lumbar vein
+Ascending lumbar vein
+Hepatic vein
+Renal vein
+Left suprarenal vein
+Left ovarian vein
+Left testicular vein
+Right suprarenal vein
+Right ovarian vein
+Right testicular vein
+Pampiniform plexus
+Common iliac vein
+Median sacral vein
+Iliolumbar vein
+Internal iliac vein
+Superior gluteal vein
+Inferior gluteal vein
+Obturator vein
+Lateral sacral vein
+Vesical vein
+Middle rectal vein
+Internal pudendal vein
+Deep vein of clitoris
+Deep vein of penis
+Inferior rectal vein
+Posterior labial vein
+Posterior scrotal vein
+External iliac vein
+Inferior epigastric vein
+Deep circumflex iliac vein
+Veins of lower limb
+Superficial vein of lower limb
+Great saphenous vein
+External pudendal vein
+Small saphenous vein
+Deep vein of lower limb
+Femoral vein
+Profunda femoris vein
+Popliteal vein
+Sural vein
+Anterior tibial vein
+Posterior tibial vein
+Fibular vein
+Hepatic portal vein
+Cystic vein
+Para-umbilical vein
+Left gastric vein
+Right gastric vein
+Superior mesenteric vein
+Right gastro-omental vein
+Ileocolic vein
+Appendicular vein
+Right colic vein
+Middle colic vein
+Splenic vein
+Left gastro-omental vein
+Inferior mesenteric vein
+Left colic vein
+Sigmoid vein
+Superior rectal vein
+
+
+Cerebrum
+Brainstem
+Heart
+Spinal cord
+Vagus nerve
+Cerebellum
+Optic nerves
+Olfactory nerves
+Brachial plexus
+Musculocutaneous nerve
+Radial nerve
+Median nerve
+Iliohypogastric nerve
+Ilioinguinal nerve
+Genitofemoral nerve
+Obturator nerve
+Ulnar nerve
+Common peroneal nerve
+Deep peroneal nerve
+Superficial peroneal nerve
+Intercostal nerves
+Subcostal nerve
+Lumbar plexus
+Sacral plexus
+Femoral nerve
+Pudental nerve
+Sciatic nerve
+Saphenous nerve
+Tibial nerve
+
+
+Anterior cerebral artery
+Middle cerebral artery
+Posterior cerebral artery
+Basilar artery
+External carotid artery
+Internal carotid artery
+Vertebral arteries
+Subclavian artery
+Aortic arch
+Axillary artery
+Internal thoracic artery
+Brachial artery
+Deep brachial artery
+Radial recurrent artery
+Superior epigastric artery
+Descending Aorta
+Inferior epigastric artery
+Interosseus artery
+Radial artery
+Ulnar artery
+Palmar carpal arch
+Dorsal carpal arch
+Superficial palmar arches
+Deep palmar arches
+Digital artery
+Femoral circumflex artery
+Descending genicular artery
+Superior genicular arteries
+Inferior genicular arteries
+Anterior tibial artery
+Posterior tibial artery
+Peroneal artery
+Deep plantar arch
+Arcuate artery
+Common carotid arteries
+Pulmonary veins
+Intercostal arteries
+Left gastric artery
+Right gastric artery
+Celiac trunk
+Splenic artery
+Common hepatic artery
+Superior mesenteric artery
+Renal artery
+Inferior mesenteric artery
+testicularis artery
+Common iliac artery
+Internal iliac artery
+External iliac artery
+Femoral circumflex artery
+Femoral artery
+Popliteal artery
+Dorsal metatarsal artery
+Dorsal digital arteries

@@ -409,35 +409,43 @@ function setup() {
             playerContainer.innerHTML = htmlContent;
             
             // if your player ID matches the player ID of the first player in the array we got from the database, it means you joined first or you are the only player who has joined, and you are the host or controller of the game
-            if (playerArray[0].playerKey == playerId) {
-                console.log("you are host");
-                host = true;
-                // set your host value to true
-                update(selfPlayerRef, {
-                    host: true
+            if (gameOn === false) {
+                if (playerArray[0].playerKey == playerId) {
+                    console.log("you are host");
+                    host = true;
+                    // set your host value to true
+                    update(selfPlayerRef, {
+                        host: true
+                    })
+
+                    document.querySelector(".play-button").style.display = "block";
+                    document.querySelector(".waiting").style.display = "none";
+                }
+
+                // everyone else
+                else {
+                    host = false;
+                    changeDictionary(playerArray[0].player.dictionary);
+                    difficulty = playerArray[0].player.difficulty;
+                    document.querySelector(".difficulty p").textContent = "difficulty: " + difficulty;
+                    document.querySelector(".slider").style.display = "none";
+                    document.querySelector("#dropdown").style.display = "none";
+                    document.querySelector(".dictionaries p").textContent = "dictionary: " + document.querySelector("#dropdown").value;
+                    textInput.focus();
+                    textInput.value = "";
+                    displayText.innerHTML = "";
+                    document.querySelector(".play-button").style.display = "none";
+                    document.querySelector(".waiting").style.display = "block";
+                }
+            }
+            
+            if (playerArray[0].player.startGame == true) {
+                startGame();
+                console.log(playerArray[0].playerKey);
+                update(ref(db, "players/" + playerArray[0].playerKey), {
+                    startGame: false
                 })
-
-                document.querySelector(".play-button").style.display = "block";
-                document.querySelector(".waiting").style.display = "none";
             }
-
-            // everyone else
-            else {
-                host = false;
-                changeDictionary(playerArray[0].player.dictionary);
-                difficulty = playerArray[0].player.difficulty;
-                document.querySelector(".difficulty p").textContent = "difficulty: " + difficulty;
-                document.querySelector(".slider").style.display = "none";
-                document.querySelector("#dropdown").style.display = "none";
-                document.querySelector(".dictionaries p").textContent = "dictionary: " + document.querySelector("#dropdown").value;
-                textInput.focus();
-                textInput.value = "";
-                displayText.innerHTML = "";
-                document.querySelector(".play-button").style.display = "none";
-                document.querySelector(".waiting").style.display = "block";
-            }
-
-            console.log(playerArray);
         })
 
         // only update the dictionary if you are the host
@@ -475,10 +483,29 @@ function setup() {
         document.querySelector(".play-button").addEventListener("click", function() {
             if (host === true) {
                 update(selfPlayerRef, {
-                    inGame: true
+                    startGame: true
                 })
             }
         })
+
+        function startGame() {
+            gameOn = true;
+            document.querySelector(".slider").style.display = "none";
+            document.querySelector(".play-button").style.display = "none";
+            document.querySelector("#dropdown").style.display = "none";
+            document.querySelector(".dictionaries p").textContent = "dictionary: " + document.querySelector("#dropdown").value;
+            textInput.focus();
+            textInput.value = "";
+            displayText.innerHTML = "";
+            usedWords = [];
+            answerTimes = [];
+            answerPrompts = [];
+            answerStreaks = [];
+            winStreak = 0;
+            coinsChange = 0;
+            document.querySelector(".fire").style.display = "none";
+            // newPrompt();
+        }
     }
     
     // click play button to start
