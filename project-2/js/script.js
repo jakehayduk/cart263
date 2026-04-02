@@ -356,6 +356,7 @@ function setup() {
         // display the game
         document.querySelector(".title-screen").style.display = "none";
         document.querySelector(".gameplay").style.display = "flex";
+        document.querySelector("header").style.display = "flex";
 
         // reference all the player nodes in Firebase
         playerRef = ref(db, "players/");

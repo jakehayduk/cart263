@@ -44,7 +44,7 @@ header {
     top: 0;
     left: 0;
     width: 100%;
-    display: flex;
+    display: none;
     justify-content: space-between;
     align-items: center;
     border-bottom: 3px solid rgba(125, 125, 125, 0.3);
@@ -69,7 +69,7 @@ header {
     justify-content: center;
     align-items: center;
     animation: floating 3s infinite ease-in-out;
-    padding-top: 150px;
+    /* padding-top: 150px; */
 }
 
 @keyframes floating {
