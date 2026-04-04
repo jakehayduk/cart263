@@ -465,6 +465,7 @@ function setup() {
                 })
             }
 
+            playerTurn = playerArray[0].player.playerTurn;
             // get the index number of your player object in the playerArray
             const myPlayerIndex = playerArray.findIndex(player => player.playerKey === playerId);
 
