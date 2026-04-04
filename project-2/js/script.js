@@ -116,176 +116,7 @@ function setup() {
     let textInput = document.querySelector('#textInput');
     let displayText = document.querySelector(".displayText");
     
-    textInput.addEventListener("keydown", function (e) {
-        // use the enter key to answer a prompt
-        if (e.which === 13) {
-            e.preventDefault();
-            // make the text lowercase for proper unity and remove any accidental characters / uneeded characters from the player's answers
-            const dict = dictionary.toLowerCase();
-            const answer = textInput.value.toLowerCase().replace(/\;|\:|\=|\.|\,|0|1|2|3|4|5|5|6|7|8|9|\"|\\|\]|\{|\[|\{|\//g, "");
-            // check for includes consistent with all of our dictionary formatting
-            const result = dict.includes("\n" + answer + "\r");
-            // simmilar check but for systems using LF line break formatting (GitHub) instead of CLRF like the above
-            const result2 = dict.includes("\n" + answer + "\n");
-            const checkInclude = answer.includes(prompt);
-            const checkDuplicates = usedWords.includes(answer);
-
-            // if the dictionary includes the typed answer, the typed answer includes the given prompt, is longer than 2 characters, and hasn't been typed already yet, the output is correct
-            if ((result == true || result2 == true) && checkInclude == true && answer.length > 2 && checkDuplicates == false) {
-                usedWords.push(answer);
-                textInput.value = "";
-                
-                // add 1 coin for each correct answer, 3 more for words longer than 14 characters, and 3 more for hyphenated words
-                let coinCount = 1;
-
-                if (answer.length > 14) {
-                    coinCount += 3;
-                }
-
-                if (answer.includes("-")) {
-                    coinCount += 3;
-                }
-
-                if (coinCount == 1) {
-                    soundCoin1.play();
-                }
-
-                else if (coinCount == 4) {
-                    soundCoin2.play();
-                }
-
-                else if (coinCount == 7) {
-                    soundCoin3.play();
-                }
-                
-                // add extra coins if the streak is ongoing
-                if (winStreak > 4) {
-                    coinCount = coinCount + 3;
-                }
-
-                // coins is the TOTAL coins and coinCount is the counted coins for any given prompt answer. coinsChange counts the coins per round
-                
-                coins += coinCount;
-                coinsChange += coinCount;
-                
-                document.querySelector(".coins p").innerHTML = "<span>coins: </span>" + coins;
-
-                // coin icon spins 360 deg every correct answer
-                coinSpin += 360;
-                document.querySelector(".coin-icon").style.transform = "rotateY(" + coinSpin + "deg)";
-
-                // get the position of the part of the answer that cointains the prompt. In this case, it's the only span element
-                const span = document.querySelector('.displayText span');
-                let rect;
-                if (span) {
-                    rect = span.getBoundingClientRect();
-                }
-                else {
-                    rect = document.querySelector(".prompt").getBoundingClientRect();
-                }
-                
-                displayText.innerHTML = "";
-
-                // create the amount of coins based on the coinCount variable
-                for (let i = 0; i < coinCount; i++) {
-                    // give each new coin a random x and y velocity
-                    let coinExists = true;
-                    let coinVX = Math.floor(Math.random() * 5) + 1;
-                    let coinVY = Math.floor(Math.random() * 8) + 4;
-                    let coinX = 0;
-                    let coinY = -120;
-                    // create each coin element
-                    let newCoin = document.createElement("div");
-                    newCoin.classList.add("coin");
-                    newCoin.innerHTML = "<img src='./images/coin.png'>";
-                    document.querySelector(".gameplay").appendChild(newCoin);
-
-                    // delay the style changes so that the css transitions actually have time to realize they exist and work properly
-                    setTimeout(function() {
-                        // random 3D transforms to each coin to make it spin
-                        newCoin.style.transform = "rotateX(" + Math.floor(Math.random() * 100) + 1 + "deg) rotateY(" + Math.floor(Math.random() * 400) + 1 + "deg) rotateZ(" + Math.floor(Math.random() * 100) + 1 + "deg)";
-                        
-                        // remove each coin after 2 seconds
-                        setTimeout(function() {
-                            newCoin.remove();
-                            coinExists = false;
-                        }, 2000)
-
-                        // update each coin's position and close the loop using the return if the coin no longer exists
-                        let lastTime = 0;
-                        function updateCoin(currentTime) {
-                            if (!coinExists) return;
-
-                            if (lastTime) {
-                                // use a delta time to ensure consistant animation speed across devices
-                                const deltaTime = (currentTime - lastTime) / 1000;
-
-                                // change the coin's velocity by a negative gravitational accelerant constant
-                                coinVY += -18 * deltaTime;
-                                // update the x and y positions based on the velocities
-                                coinY += coinVY;
-                                coinX += coinVX - 2.5;
-                                // update the element position
-                                newCoin.style.bottom = rect.bottom + coinY + "px";
-                                newCoin.style.left = rect.left + coinX + "px";
-                            }
-                           
-                            lastTime = currentTime;
-                            
-                            requestAnimationFrame(updateCoin);
-                        }
-                        requestAnimationFrame(updateCoin);
-                    }, 5)
-                }
-                
-                // get the difference of time between the two Date() objects (it gives it in milliseconds)
-                promptTime = (new Date()) - promptTime;
-                // log the time difference and the prompt itself so we know how long it takes for the player to answer each prompt
-                answerTimes.push(promptTime);
-                answerPrompts.push(prompt);
-
-                // add 1 to the win streak unless their time is over 4.5 seconds
-                winStreak ++;
-
-                if (promptTime > 4500) {
-                    winStreak = 0;
-                }
-
-                // log the win streak and call for a new prompt
-                answerStreaks.push(winStreak);
-                
-                prompt = newPrompt();
-            }
-
-            else {
-                // if the player gets the answer wrong, reset the win streak and play the incorrect animation
-                soundIncorrect.play();
-                winStreak = 0;
-                displayText.style.color = "var(--tertiary)";
-                displayText.style.animation = "shake 0.3s ease-out";
-                setTimeout(function () {
-                    displayText.style.color = "var(--primary)";
-                    displayText.style.animation = "none";
-                }, 500)
-            }
-
-            // at 5 consecutive correct answers, display the fire to indicate the player's win streak
-            if (winStreak > 4) {
-                document.querySelector(".fire").style.display = "block";
-                
-                if (!winStreakSound) {
-                    winStreakSound = true;
-                    soundFire.play();
-                }
-                
-            }
-
-            else {
-                winStreakSound = false;
-                document.querySelector(".fire").style.display = "none";
-            }
-        }
-    })
+    
 
     function newPrompt() {
         // initial prompt calculation that randomly picks from the list of bigrams array in bigrams.js based on the current set difficulty
@@ -353,6 +184,190 @@ function setup() {
     let host = false;
 
     function joinGame() {
+        textInput.addEventListener("keydown", function (e) {
+            // use the enter key to answer a prompt
+            if (e.which === 13) {
+                e.preventDefault();
+                // make the text lowercase for proper unity and remove any accidental characters / uneeded characters from the player's answers
+                const dict = dictionary.toLowerCase();
+                const answer = textInput.value.toLowerCase().replace(/\;|\:|\=|\.|\,|0|1|2|3|4|5|5|6|7|8|9|\"|\\|\]|\{|\[|\{|\//g, "");
+                // check for includes consistent with all of our dictionary formatting
+                const result = dict.includes("\n" + answer + "\r");
+                // simmilar check but for systems using LF line break formatting (GitHub) instead of CLRF like the above
+                const result2 = dict.includes("\n" + answer + "\n");
+                const checkInclude = answer.includes(prompt);
+                const checkDuplicates = usedWords.includes(answer);
+
+                // if the dictionary includes the typed answer, the typed answer includes the given prompt, is longer than 2 characters, and hasn't been typed already yet, the output is correct
+                if ((result == true || result2 == true) && checkInclude == true && answer.length > 2 && checkDuplicates == false) {
+                    usedWords.push(answer);
+                    textInput.value = "";
+                    
+                    // add 1 coin for each correct answer, 3 more for words longer than 14 characters, and 3 more for hyphenated words
+                    let coinCount = 1;
+
+                    if (answer.length > 14) {
+                        coinCount += 3;
+                    }
+
+                    if (answer.includes("-")) {
+                        coinCount += 3;
+                    }
+
+                    if (coinCount == 1) {
+                        soundCoin1.play();
+                    }
+
+                    else if (coinCount == 4) {
+                        soundCoin2.play();
+                    }
+
+                    else if (coinCount == 7) {
+                        soundCoin3.play();
+                    }
+                    
+                    // add extra coins if the streak is ongoing
+                    if (winStreak > 4) {
+                        coinCount = coinCount + 3;
+                    }
+
+                    // coins is the TOTAL coins and coinCount is the counted coins for any given prompt answer. coinsChange counts the coins per round
+                    
+                    coins += coinCount;
+                    coinsChange += coinCount;
+                    
+                    document.querySelector(".coins p").innerHTML = "<span>coins: </span>" + coins;
+
+                    // coin icon spins 360 deg every correct answer
+                    coinSpin += 360;
+                    document.querySelector(".coin-icon").style.transform = "rotateY(" + coinSpin + "deg)";
+
+                    // get the position of the part of the answer that cointains the prompt. In this case, it's the only span element
+                    const span = document.querySelector('.displayText span');
+                    let rect;
+                    if (span) {
+                        rect = span.getBoundingClientRect();
+                    }
+                    else {
+                        rect = document.querySelector(".prompt").getBoundingClientRect();
+                    }
+                    
+                    displayText.innerHTML = "";
+
+                    // create the amount of coins based on the coinCount variable
+                    for (let i = 0; i < coinCount; i++) {
+                        // give each new coin a random x and y velocity
+                        let coinExists = true;
+                        let coinVX = Math.floor(Math.random() * 5) + 1;
+                        let coinVY = Math.floor(Math.random() * 8) + 4;
+                        let coinX = 0;
+                        let coinY = -120;
+                        // create each coin element
+                        let newCoin = document.createElement("div");
+                        newCoin.classList.add("coin");
+                        newCoin.innerHTML = "<img src='./images/coin.png'>";
+                        document.querySelector(".gameplay").appendChild(newCoin);
+
+                        // delay the style changes so that the css transitions actually have time to realize they exist and work properly
+                        setTimeout(function() {
+                            // random 3D transforms to each coin to make it spin
+                            newCoin.style.transform = "rotateX(" + Math.floor(Math.random() * 100) + 1 + "deg) rotateY(" + Math.floor(Math.random() * 400) + 1 + "deg) rotateZ(" + Math.floor(Math.random() * 100) + 1 + "deg)";
+                            
+                            // remove each coin after 2 seconds
+                            setTimeout(function() {
+                                newCoin.remove();
+                                coinExists = false;
+                            }, 2000)
+
+                            // update each coin's position and close the loop using the return if the coin no longer exists
+                            let lastTime = 0;
+                            function updateCoin(currentTime) {
+                                if (!coinExists) return;
+
+                                if (lastTime) {
+                                    // use a delta time to ensure consistant animation speed across devices
+                                    const deltaTime = (currentTime - lastTime) / 1000;
+
+                                    // change the coin's velocity by a negative gravitational accelerant constant
+                                    coinVY += -18 * deltaTime;
+                                    // update the x and y positions based on the velocities
+                                    coinY += coinVY;
+                                    coinX += coinVX - 2.5;
+                                    // update the element position
+                                    newCoin.style.bottom = rect.bottom + coinY + "px";
+                                    newCoin.style.left = rect.left + coinX + "px";
+                                }
+                            
+                                lastTime = currentTime;
+                                
+                                requestAnimationFrame(updateCoin);
+                            }
+                            requestAnimationFrame(updateCoin);
+                        }, 5)
+                    }
+                    
+                    // get the difference of time between the two Date() objects (it gives it in milliseconds)
+                    promptTime = (new Date()) - promptTime;
+                    // log the time difference and the prompt itself so we know how long it takes for the player to answer each prompt
+                    answerTimes.push(promptTime);
+                    answerPrompts.push(prompt);
+
+                    // add 1 to the win streak unless their time is over 4.5 seconds
+                    winStreak ++;
+
+                    if (promptTime > 4500) {
+                        winStreak = 0;
+                    }
+
+                    // log the win streak and call for a new prompt
+                    answerStreaks.push(winStreak);
+                    
+                    prompt = newPrompt();
+                }
+
+                else {
+                    // if the player gets the answer wrong, reset the win streak and play the incorrect animation
+                    soundIncorrect.play();
+                    winStreak = 0;
+                    displayText.style.color = "var(--tertiary)";
+                    displayText.style.animation = "shake 0.3s ease-out";
+                    setTimeout(function () {
+                        displayText.style.color = "var(--primary)";
+                        displayText.style.animation = "none";
+                    }, 500)
+                }
+
+                // at 5 consecutive correct answers, display the fire to indicate the player's win streak
+                if (winStreak > 4) {
+                    document.querySelector(".fire").style.display = "block";
+                    
+                    if (!winStreakSound) {
+                        winStreakSound = true;
+                        soundFire.play();
+                    }
+                    
+                }
+
+                else {
+                    winStreakSound = false;
+                    document.querySelector(".fire").style.display = "none";
+                }
+
+                if (host === true) {
+                    if (playerTurn >= playerArray.length - 1) {
+                        playerTurn = 0;
+                    }
+                    else {
+                       playerTurn ++; 
+                    }
+
+                    update(selfPlayerRef, {
+                        playerTurn: playerTurn
+                    })
+                }
+            }
+        })
+
         // display the game
         document.querySelector(".title-screen").style.display = "none";
         document.querySelector(".gameplay").style.display = "flex";
@@ -365,6 +380,9 @@ function setup() {
         // get your player ID
         playerId = selfPlayerRef.key;
 
+        let playerArray = [];
+        let playerTurn = 0;
+
         // set the base variables for your player in Firebase
         const dictName = document.querySelector("#dropdown").value;
         set(selfPlayerRef, {
@@ -372,7 +390,8 @@ function setup() {
             coins: coins,
             host: false,
             dictionary: dictName,
-            difficulty: difficulty
+            difficulty: difficulty,
+            playerTurn: 0
         })
 
         // if you close the window or refresh the page, remove your player node from the database
@@ -381,9 +400,9 @@ function setup() {
         // this function fires when player values are updated
         onValue(playerRef, (snapshot) => {
 
-            const playerArray = [];
             const playerContainer = document.querySelector(".players-container");
             let htmlContent = "";
+            playerArray = [];
             // loop through the player objects and push them into a local array, along with the respective player keys
             snapshot.forEach((playerSnapshot) => {
                 const player = playerSnapshot.val();
@@ -445,6 +464,19 @@ function setup() {
                 update(ref(db, "players/" + playerArray[0].playerKey), {
                     startGame: false
                 })
+            }
+
+            // get the index number of your player object in the playerArray
+            const myPlayerIndex = playerArray.findIndex(player => player.playerKey === playerId);
+
+            // check if it's your turn
+            if (playerArray[0].player.playerTurn == myPlayerIndex) {
+                textInput.style.display = "inline";
+                console.log("your turn");
+            }
+            else {
+                textInput.style.display = "none";
+                console.log("not your turn");
             }
         })
 
