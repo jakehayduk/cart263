@@ -353,18 +353,17 @@ function setup() {
                     document.querySelector(".fire").style.display = "none";
                 }
 
-                if (host === true) {
-                    if (playerTurn >= playerArray.length - 1) {
-                        playerTurn = 0;
-                    }
-                    else {
-                       playerTurn ++; 
-                    }
-
-                    update(selfPlayerRef, {
-                        playerTurn: playerTurn
-                    })
+                if (playerTurn >= playerArray.length - 1) {
+                    playerTurn = 0;
                 }
+                else {
+                playerTurn ++; 
+                }
+
+                update(ref(db, "players/" + playerArray[0].playerKey), {
+                    playerTurn: playerTurn
+                })
+
             }
         })
 
