@@ -380,6 +380,7 @@ function setup() {
         let playerArray = [];
         let playerTurn = 0;
         let yourTurn = false;
+        let resetTurnText = false;
 
         // set the base variables for your player in Firebase
         const dictName = document.querySelector("#dropdown").value;
@@ -494,12 +495,17 @@ function setup() {
                 textInput.focus();
                 console.log("your turn");
                 yourTurn = true;
+                if (resetTurnText === false) {
+                    displayText.innerHTML = "";
+                    resetTurnText = true;
+                }
             }
             else {
                 textInput.style.display = "none";
                 console.log("not your turn");
                 yourTurn = false;
                 displayText.innerHTML = playerArray[playerTurn].player.typing;
+                resetTurnText = false;
             }
 
             // display the prompt you get from the host
