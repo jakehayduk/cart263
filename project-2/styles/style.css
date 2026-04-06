@@ -536,6 +536,27 @@ option {
     filter: drop-shadow(0px 0px 20px var(--tertiary))
 }
 
+.avatars {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 400px;
+    margin-top: 30px;
+}
+
+.avatar {
+    width: 64px;
+    image-rendering: pixelated;
+    padding: 5px;
+    padding-top: 0px;
+    cursor: pointer;
+}
+
+.avatar-select {
+    border: 3px solid var(--tertiary);
+    border-radius: var(--radius);
+}
+
 /* MEDIA QUERIES */
 
 @media only screen and (max-width: 1300px) {

@@ -604,6 +604,8 @@ function setup() {
             }
         })
     }
+
+    // document.querySelector(".")
     
     // click play button to start
     document.querySelector(".join-button").addEventListener("click", function () {
