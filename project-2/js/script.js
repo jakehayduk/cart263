@@ -361,9 +361,9 @@ function setup() {
                 }
 
                 update(ref(db, "players/" + playerArray[0].playerKey), {
-                    playerTurn: playerTurn
+                    playerTurn: playerTurn,
+                    prompt: prompt
                 })
-
             }
         })
 
@@ -478,6 +478,9 @@ function setup() {
                 textInput.style.display = "none";
                 console.log("not your turn");
             }
+
+            prompt = playerArray[0].player.prompt;
+            document.querySelector('.prompt').textContent = prompt.toUpperCase();
         })
 
         // only update the dictionary if you are the host
@@ -541,6 +544,12 @@ function setup() {
             coinsChange = 0;
             document.querySelector(".fire").style.display = "none";
             newPrompt();
+
+            if (host === true) {
+                update(selfPlayerRef, {
+                    prompt: prompt
+                })
+            }
         }
     }
     
