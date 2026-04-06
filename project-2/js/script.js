@@ -329,6 +329,10 @@ function setup() {
                         playerTurn: playerTurn,
                         prompt: prompt
                     })
+
+                    update(selfPlayerRef, {
+                        typing: ""
+                    })
                 }
 
                 else {
@@ -386,7 +390,8 @@ function setup() {
             dictionary: dictName,
             difficulty: difficulty,
             playerTurn: 0,
-            prompt: "er"
+            prompt: "er",
+            typing: ""
         })
 
         // if you close the window or refresh the page, remove your player node from the database
