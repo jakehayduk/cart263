@@ -72,7 +72,7 @@ function setup() {
     let promptTime;
     let answerTimes = [];
     let answerPrompts = [];
-    let answerStreaks = []
+    let answerStreaks = [];
 
     // load sounds
     let sound1 = new Audio('./sounds/sound-1.mp3');
@@ -134,14 +134,6 @@ function setup() {
         document.querySelector('.prompt').textContent = prompt.toUpperCase();
         return prompt;
     }
-
-    // when the player types
-    textInput.addEventListener("input", function() {
-        // add a span tag around where the prompt appears in the typed answer so we can distinguish it
-        let newHTML = this.value;
-        let newHTML2 = newHTML.toLowerCase().replace(prompt, "<span>" + prompt + "</span>");
-        displayText.innerHTML = newHTML2;
-    })
 
     // when something is selected from the dictionaries dropdown list
     // document.querySelector("#dropdown").addEventListener("change", function () {
@@ -383,6 +375,7 @@ function setup() {
 
         let playerArray = [];
         let playerTurn = 0;
+        let yourTurn = false;
 
         // set the base variables for your player in Firebase
         const dictName = document.querySelector("#dropdown").value;
@@ -493,11 +486,15 @@ function setup() {
             // check if it's your turn
             if (playerArray[0].player.playerTurn == myPlayerIndex) {
                 textInput.style.display = "inline";
+                textInput.focus();
                 console.log("your turn");
+                yourTurn = true;
             }
             else {
                 textInput.style.display = "none";
                 console.log("not your turn");
+                yourTurn = false;
+                displayText.innerHTML = playerArray[playerTurn].player.typing;
             }
 
             // display the prompt you get from the host
@@ -581,6 +578,20 @@ function setup() {
                 console.log("tab is inactive");
             }
         });
+
+        // when the player types
+        textInput.addEventListener("input", function() {
+            // add a span tag around where the prompt appears in the typed answer so we can distinguish it
+            let newHTML = this.value;
+            let newHTML2 = newHTML.toLowerCase().replace(prompt, "<span>" + prompt + "</span>");
+            // if it's your turn, send the typed text to Firebase
+            if (yourTurn === true) {
+                displayText.innerHTML = newHTML2;
+                update(selfPlayerRef, {
+                    typing: newHTML2
+                })
+            }
+        })
     }
     
     // click play button to start
