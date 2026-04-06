@@ -324,6 +324,7 @@ function setup() {
                     
                     prompt = newPrompt();
 
+                    // next player's turn
                     if (playerTurn >= playerArray.length - 1) {
                         playerTurn = 0;
                     }
@@ -331,6 +332,7 @@ function setup() {
                     playerTurn ++; 
                     }
 
+                    // update the host variables with the player turn and prompt
                     update(ref(db, "players/" + playerArray[0].playerKey), {
                         playerTurn: playerTurn,
                         prompt: prompt
@@ -409,21 +411,38 @@ function setup() {
 
                 playerArray.push({playerKey, player});
 
-                if (playerKey == playerId && player.host === false) {
-                    htmlContent += "<div class='player-item' style='background-color: var(--primary); color: var(--secondary)'>" + player.name + " &bullet; " + player.coins + "</div>"
-                }
-                else if (player.host === true && playerKey !== playerId) {
-                    htmlContent += "<div class='player-item'>" + player.name + " &bullet; " + player.coins + "<img src='./images/crown.png' class='player-crown'></div>"
-                }
-                else if (player.host === true && playerKey == playerId) {
-                    htmlContent += "<div class='player-item' style='background-color: var(--primary); color: var(--secondary)'>" + player.name + " &bullet; " + player.coins + "<img src='./images/crown.png' class='player-crown'></div>"
-                }
-                else {
-                    htmlContent += "<div class='player-item'>" + player.name + " &bullet; " + player.coins + "</div>"
-                }
+                
                 
                 // MAYBE IT WOULD BE COOL TO HAVE A FEW PRESET AVATARS THAT WE CAN CHOOSE FROM TO DISPLAY IN THE GAME
             })
+
+            // display the players
+            for (let i = 0; i < playerArray.length; i++) {
+                // if player is you and not the host
+                if (playerArray[i].playerKey == playerId && playerArray[i].player.host === false && i !== playerArray[0].player.playerTurn) {
+                    htmlContent += "<div class='player-item' style='background-color: var(--primary); color: var(--secondary)'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
+                }
+                // if the player is not you but is the host
+                else if (playerArray[i].player.host === true && playerArray[i].playerKey !== playerId && i !== playerArray[0].player.playerTurn) {
+                    htmlContent += "<div class='player-item'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "<img src='./images/crown.png' class='player-crown'></div>"
+                }
+                // if the player is you and is the host
+                else if (playerArray[i].player.host === true && playerArray[i].playerKey == playerId && i !== playerArray[0].player.playerTurn) {
+                    htmlContent += "<div class='player-item' style='background-color: var(--primary); color: var(--secondary)'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "<img src='./images/crown.png' class='player-crown'></div>"
+                }
+                // if it's the player's turn
+                else if (i == playerArray[0].player.playerTurn) {
+                    htmlContent += "<div class='player-item' style='background-color: var(--tertiary); color: var(--primary);'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
+                }
+                // if it's the player's turn and they are host
+                else if (i == playerArray[0].player.playerTurn && playerArray[i].player.host === true) {
+                    htmlContent += "<div class='player-item' style='background-color: var(--tertiary); color: var(--primary);'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "<img src='./images/crown.png' class='player-crown'></div>"
+                }
+                // if the player is anything else
+                else {
+                    htmlContent += "<div class='player-item'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
+                }
+            }
 
             playerContainer.innerHTML = htmlContent;
             
