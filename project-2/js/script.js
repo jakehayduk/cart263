@@ -499,7 +499,7 @@ function setup() {
             }
 
             prompt = playerArray[0].player.prompt;
-            document.querySelector('.prompt').textContent = prompt.toUpperCase();
+            // document.querySelector('.prompt').textContent = prompt.toUpperCase();
         })
 
         // only update the dictionary if you are the host
@@ -570,6 +570,14 @@ function setup() {
                 })
             }
         }
+
+        document.addEventListener("visibilitychange", (event) => {
+            if (document.visibilityState == "visible") {
+                textInput.focus();
+            } else {
+                console.log("tab is inactive");
+            }
+        });
     }
     
     // click play button to start
