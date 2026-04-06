@@ -5,7 +5,7 @@ html {
     --tertiary: #D72D51;
     --font1: "Bitcount Single", system-ui;
     --font2: "Inter Tight", sans-serif;
-    --radius: 10px;
+    --radius: 5px;
 }
 
 * {
@@ -503,10 +503,21 @@ option {
 }
 
 .player-item {
-    display: block;
+    display: flex;
     padding: 15px;
     background-color: rgba(125, 125, 125, 0.1);
     border-radius: var(--radius);
+    justify-content: space-between;
+    align-items: center;
+    height: 3rem;
+    overflow: hidden;
+}
+
+.player-item-avatar {
+    image-rendering: pixelated;
+    height: 64px;
+    margin-top: 10px;
+    margin-left: -16px;
 }
 
 .player-crown {
@@ -542,6 +553,9 @@ option {
     align-items: center;
     width: 400px;
     margin-top: 30px;
+    padding: 20px;
+    background: rgb(from var(--tertiary) r g b / 0.2);
+    border-radius: var(--radius);
 }
 
 .avatar {
@@ -550,10 +564,12 @@ option {
     padding: 5px;
     padding-top: 0px;
     cursor: pointer;
+    -webkit-user-drag: none;
+    user-select: none;
 }
 
 .avatar-select {
-    border: 3px solid var(--tertiary);
+    background: var(--tertiary);
     border-radius: var(--radius);
 }
 
