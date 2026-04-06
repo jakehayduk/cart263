@@ -392,7 +392,8 @@ function setup() {
             host: false,
             dictionary: dictName,
             difficulty: difficulty,
-            playerTurn: 0
+            playerTurn: 0,
+            prompt: "er"
         })
 
         // if you close the window or refresh the page, remove your player node from the database
@@ -411,8 +412,6 @@ function setup() {
 
                 playerArray.push({playerKey, player});
 
-                
-                
                 // MAYBE IT WOULD BE COOL TO HAVE A FEW PRESET AVATARS THAT WE CAN CHOOSE FROM TO DISPLAY IN THE GAME
             })
 
@@ -477,11 +476,14 @@ function setup() {
                 }
             }
             
-            if (playerArray[0].player.startGame == true) {
+            if (playerArray[0].player.startGame === true) {
+                if (host === true) {
+                    update(ref(db, "players/" + playerArray[0].playerKey), {
+                        startGame: false
+                    })
+                }
+                
                 startGame();
-                update(ref(db, "players/" + playerArray[0].playerKey), {
-                    startGame: false
-                })
             }
 
             playerTurn = playerArray[0].player.playerTurn;
@@ -498,8 +500,9 @@ function setup() {
                 console.log("not your turn");
             }
 
+            // display the prompt you get from the host
             prompt = playerArray[0].player.prompt;
-            // document.querySelector('.prompt').textContent = prompt.toUpperCase();
+            document.querySelector('.prompt').textContent = prompt.toUpperCase();
         })
 
         // only update the dictionary if you are the host
