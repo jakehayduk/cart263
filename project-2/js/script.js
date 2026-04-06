@@ -323,6 +323,18 @@ function setup() {
                     answerStreaks.push(winStreak);
                     
                     prompt = newPrompt();
+
+                    if (playerTurn >= playerArray.length - 1) {
+                        playerTurn = 0;
+                    }
+                    else {
+                    playerTurn ++; 
+                    }
+
+                    update(ref(db, "players/" + playerArray[0].playerKey), {
+                        playerTurn: playerTurn,
+                        prompt: prompt
+                    })
                 }
 
                 else {
@@ -352,18 +364,6 @@ function setup() {
                     winStreakSound = false;
                     document.querySelector(".fire").style.display = "none";
                 }
-
-                if (playerTurn >= playerArray.length - 1) {
-                    playerTurn = 0;
-                }
-                else {
-                playerTurn ++; 
-                }
-
-                update(ref(db, "players/" + playerArray[0].playerKey), {
-                    playerTurn: playerTurn,
-                    prompt: prompt
-                })
             }
         })
 
