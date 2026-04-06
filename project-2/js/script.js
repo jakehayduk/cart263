@@ -430,8 +430,8 @@ function setup() {
                 else if (playerArray[i].player.host === true && playerArray[i].playerKey == playerId && i !== playerArray[0].player.playerTurn) {
                     htmlContent += "<div class='player-item' style='background-color: var(--primary); color: var(--secondary)'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "<img src='./images/crown.png' class='player-crown'></div>"
                 }
-                // if it's the player's turn
-                else if (i == playerArray[0].player.playerTurn) {
+                // if it's the player's turn and they are not host
+                else if (i == playerArray[0].player.playerTurn && playerArray[i].player.host === false) {
                     htmlContent += "<div class='player-item' style='background-color: var(--tertiary); color: var(--primary);'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
                 }
                 // if it's the player's turn and they are host
