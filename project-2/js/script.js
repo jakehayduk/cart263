@@ -424,11 +424,11 @@ function setup() {
                 }
                 // if the player is not you but is the host
                 else if (playerArray[i].player.host === true && playerArray[i].playerKey !== playerId && i !== playerArray[0].player.playerTurn) {
-                    htmlContent += "<div class='player-item'><img src='./images/avatar-" + playerArray[i].player.avatar + ".png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "<img src='./images/crown.png' class='player-crown'></div>"
+                    htmlContent += "<div class='player-item'><img src='./images/avatar-" + playerArray[i].player.avatar + "-crown.png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
                 }
                 // if the player is you and is the host
                 else if (playerArray[i].player.host === true && playerArray[i].playerKey == playerId && i !== playerArray[0].player.playerTurn) {
-                    htmlContent += "<div class='player-item' style='background-color: var(--primary); color: var(--secondary)'><img src='./images/avatar-" + playerArray[i].player.avatar + ".png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "<img src='./images/crown.png' class='player-crown'></div>"
+                    htmlContent += "<div class='player-item' style='background-color: var(--primary); color: var(--secondary)'><img src='./images/avatar-" + playerArray[i].player.avatar + "-crown.png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
                 }
                 // if it's the player's turn and they are not host
                 else if (i == playerArray[0].player.playerTurn && playerArray[i].player.host === false) {
@@ -436,7 +436,7 @@ function setup() {
                 }
                 // if it's the player's turn and they are host
                 else if (i == playerArray[0].player.playerTurn && playerArray[i].player.host === true) {
-                    htmlContent += "<div class='player-item' style='background-color: var(--tertiary); color: var(--primary);'><img src='./images/avatar-" + playerArray[i].player.avatar + ".png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "<img src='./images/crown.png' class='player-crown'></div>"
+                    htmlContent += "<div class='player-item' style='background-color: var(--tertiary); color: var(--primary);'><img src='./images/avatar-" + playerArray[i].player.avatar + "-crown.png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
                 }
                 // if the player is anything else
                 else {
