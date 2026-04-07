@@ -25,7 +25,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
 import { getAuth } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js'
-import { getDatabase, get, set, ref, push, onDisconnect, remove, update, onValue } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js'
+import { getDatabase, get, set, ref, push, onDisconnect, remove, update, onValue, onChildAdded, onChildRemoved } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js'
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -417,34 +417,54 @@ function setup() {
             })
 
             // display the players
-            for (let i = 0; i < playerArray.length; i++) {
-                // if player is you and not the host
-                if (playerArray[i].playerKey == playerId && playerArray[i].player.host === false && i !== playerArray[0].player.playerTurn) {
-                    htmlContent += "<div class='player-item' style='background-color: var(--primary); color: var(--secondary)'><img src='./images/avatar-" + playerArray[i].player.avatar + ".png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
+            let playerItems = document.getElementsByClassName("player-item");
+            for (let i = 0; i < playerItems.length; i++) {
+                playerItems[i].style.backgroundColor = "rgba(125, 125, 125, 0.1";
+                playerItems[i].style.color = "var(--primary)";
+
+                if (playerArray[i].playerKey == playerId) {
+                    playerItems[i].style.backgroundColor = "var(--primary)";
+                    playerItems[i].style.color = "var(--secondary)";
                 }
-                // if the player is not you but is the host
-                else if (playerArray[i].player.host === true && playerArray[i].playerKey !== playerId && i !== playerArray[0].player.playerTurn) {
-                    htmlContent += "<div class='player-item'><img src='./images/avatar-" + playerArray[i].player.avatar + "-crown.png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
+
+                if (playerArray[i].player.host === true) {
+                    playerItems[i].querySelector(".player-item-avatar").src = "./images/avatar-" + playerArray[i].player.avatar + "-crown.png"
                 }
-                // if the player is you and is the host
-                else if (playerArray[i].player.host === true && playerArray[i].playerKey == playerId && i !== playerArray[0].player.playerTurn) {
-                    htmlContent += "<div class='player-item' style='background-color: var(--primary); color: var(--secondary)'><img src='./images/avatar-" + playerArray[i].player.avatar + "-crown.png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
-                }
-                // if it's the player's turn and they are not host
-                else if (i == playerArray[0].player.playerTurn && playerArray[i].player.host === false) {
-                    htmlContent += "<div class='player-item' style='background-color: var(--tertiary); color: var(--primary);'><img src='./images/avatar-" + playerArray[i].player.avatar + ".png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
-                }
-                // if it's the player's turn and they are host
-                else if (i == playerArray[0].player.playerTurn && playerArray[i].player.host === true) {
-                    htmlContent += "<div class='player-item' style='background-color: var(--tertiary); color: var(--primary);'><img src='./images/avatar-" + playerArray[i].player.avatar + "-crown.png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
-                }
-                // if the player is anything else
                 else {
-                    htmlContent += "<div class='player-item'><img src='./images/avatar-" + playerArray[i].player.avatar + ".png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
+                    playerItems[i].querySelector(".player-item-avatar").src = "./images/avatar-" + playerArray[i].player.avatar + ".png"
                 }
+
+                if (i == playerArray[0].player.playerTurn) {
+                    playerItems[i].style.backgroundColor = "var(--tertiary)";
+                    playerItems[i].style.color = "var(--primary)";
+                }
+                // if player is you and not the host
+                // if (playerArray[i].playerKey == playerId && playerArray[i].player.host === false && i !== playerArray[0].player.playerTurn) {
+                //     htmlContent += "<div class='player-item' style='background-color: var(--primary); color: var(--secondary)'><img src='./images/avatar-" + playerArray[i].player.avatar + ".png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
+                // }
+                // // if the player is not you but is the host
+                // else if (playerArray[i].player.host === true && playerArray[i].playerKey !== playerId && i !== playerArray[0].player.playerTurn) {
+                //     htmlContent += "<div class='player-item'><img src='./images/avatar-" + playerArray[i].player.avatar + "-crown.png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
+                // }
+                // // if the player is you and is the host
+                // else if (playerArray[i].player.host === true && playerArray[i].playerKey == playerId && i !== playerArray[0].player.playerTurn) {
+                //     htmlContent += "<div class='player-item' style='background-color: var(--primary); color: var(--secondary)'><img src='./images/avatar-" + playerArray[i].player.avatar + "-crown.png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
+                // }
+                // // if it's the player's turn and they are not host
+                // else if (i == playerArray[0].player.playerTurn && playerArray[i].player.host === false && gameOn === true) {
+                //     htmlContent += "<div class='player-item' style='background-color: var(--tertiary); color: var(--primary);'><img src='./images/avatar-" + playerArray[i].player.avatar + ".png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
+                // }
+                // // if it's the player's turn and they are host
+                // else if (i == playerArray[0].player.playerTurn && playerArray[i].player.host === true && gameOn === true) {
+                //     htmlContent += "<div class='player-item' style='background-color: var(--tertiary); color: var(--primary);'><img src='./images/avatar-" + playerArray[i].player.avatar + "-crown.png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
+                // }
+                // // if the player is anything else
+                // else {
+                //     htmlContent += "<div class='player-item'><img src='./images/avatar-" + playerArray[i].player.avatar + ".png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
+                // }
             }
 
-            playerContainer.innerHTML = htmlContent;
+            // playerContainer.innerHTML = htmlContent;
             
             // if your player ID matches the player ID of the first player in the array we got from the database, it means you joined first or you are the only player who has joined, and you are the host or controller of the game
             if (gameOn === false) {
@@ -493,32 +513,67 @@ function setup() {
 
             const playerTurnMessage = document.querySelector('.player-turn');
             // check if it's your turn
-            if (playerArray[0].player.playerTurn == myPlayerIndex) {
-                textInput.style.display = "inline";
-                textInput.focus();
-                console.log("your turn");
-                yourTurn = true;
-                if (resetTurnText === false) {
-                    displayText.innerHTML = "";
-                    resetTurnText = true;
-                }
+            if (gameOn === true) {
+                if (playerArray[0].player.playerTurn == myPlayerIndex) {
+                    textInput.style.display = "inline";
+                    textInput.focus();
+                    yourTurn = true;
+                    if (resetTurnText === false) {
+                        displayText.innerHTML = "";
+                        resetTurnText = true;
+                    }
 
-                playerTurnMessage.style.display = "none";
+                    playerTurnMessage.style.display = "none";
+                    displayText.style.opacity = "1";
+                    document.querySelector(".prompt-container").style.opacity = "1";
+                }
+                else {
+                    textInput.style.display = "none";
+                    yourTurn = false;
+                    displayText.innerHTML = playerArray[playerTurn].player.typing;
+                    resetTurnText = false;
+                    playerTurnMessage.innerHTML = playerArray[playerTurn].player.name + "\'s turn";
+                    playerTurnMessage.style.display = "block";
+                    displayText.style.opacity = "0.7";
+                    document.querySelector(".prompt-container").style.opacity = "0.7";
+                }
             }
-            else {
-                textInput.style.display = "none";
-                console.log("not your turn");
-                yourTurn = false;
-                displayText.innerHTML = playerArray[playerTurn].player.typing;
-                resetTurnText = false;
-                playerTurnMessage.innerHTML = playerArray[playerTurn].player.name + "\'s turn";
-                playerTurnMessage.style.display = "block";
-            }
+            
 
             // display the prompt you get from the host
             prompt = playerArray[0].player.prompt;
             document.querySelector('.prompt').textContent = prompt.toUpperCase();
         })
+
+        onChildAdded(playerRef, (snapshot) => {
+            const newPlayer = snapshot.val();
+            const newPlayerKey = snapshot.key;
+
+            const newPlayerItem = document.createElement('div');
+
+            newPlayerItem.innerHTML = "<img src='./images/avatar-" + newPlayer.avatar + ".png' class='player-item-avatar'>" + newPlayer.name + " &bullet; " + newPlayer.coins;
+            newPlayerItem.className = "player-item";
+
+            document.querySelector(".players-container").appendChild(newPlayerItem);
+            
+            // updatePlayerList();
+        })
+
+        // onChildRemoved(playerRef, (snapshot) => {
+        //     updatePlayerList();
+        // })
+
+        // function updatePlayerList() {
+        //     console.log(playerArray);
+        //     for (let i = 0; i < playerArray.length; i++) {
+        //         const newPlayerItem = document.createElement('div');
+
+        //         newPlayerItem.innerHTML = playerArray[i].player.name;
+        //         newPlayerItem.className = "player-item";
+
+        //         document.querySelector(".players-container").appendChild(newPlayerItem);
+        //     }
+        // }
 
         // only update the dictionary if you are the host
         document.querySelector("#dropdown").addEventListener("change", function () {

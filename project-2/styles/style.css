@@ -93,7 +93,6 @@ header {
     font-size: 6rem;
     font-weight: 500;
     color: var(--tertiary);
-    
 }
 
 #textInput {
@@ -557,11 +556,23 @@ option {
     cursor: pointer;
     -webkit-user-drag: none;
     user-select: none;
+    transition: all 0.3s;
+    border-radius: var(--radius);
+}
+
+.avatar:hover {
+    transform: scale(1.05);
+    background: rgb(from var(--tertiary) r g b / 0.2);
 }
 
 .avatar-select {
     background: var(--tertiary);
     border-radius: var(--radius);
+}
+
+.avatar-select:hover {
+    transform: scale(1);
+    background: var(--tertiary);
 }
 
 .player-turn {
