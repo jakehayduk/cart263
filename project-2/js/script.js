@@ -322,7 +322,7 @@ function setup() {
                         playerTurn = 0;
                     }
                     else {
-                    playerTurn ++; 
+                        playerTurn ++; 
                     }
 
                     // update the host variables with the player turn and prompt
@@ -383,6 +383,9 @@ function setup() {
         let yourTurn = false;
         let resetTurnText = false;
 
+        // if you close the window or refresh the page, remove your player node from the database
+        onDisconnect(selfPlayerRef).remove();
+
         // set the base variables for your player in Firebase
         const dictName = document.querySelector("#dropdown").value;
         set(selfPlayerRef, {
@@ -396,9 +399,6 @@ function setup() {
             prompt: "er",
             typing: ""
         })
-
-        // if you close the window or refresh the page, remove your player node from the database
-        onDisconnect(ref(db, "players/" + playerId)).remove();
 
         // this function fires when player values are updated
         onValue(playerRef, (snapshot) => {
