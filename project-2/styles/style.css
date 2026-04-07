@@ -564,6 +564,17 @@ option {
     border-radius: var(--radius);
 }
 
+.player-turn {
+    text-align: center;
+    width: 80%;
+    font-size: 1rem;
+    font-family: var(--font1);
+    color: var(--primary);
+    position: fixed;
+    bottom: 30px;
+    display: none;
+}
+
 /* MEDIA QUERIES */
 
 @media only screen and (max-width: 1300px) {

@@ -491,6 +491,7 @@ function setup() {
             // get the index number of your player object in the playerArray
             const myPlayerIndex = playerArray.findIndex(player => player.playerKey === playerId);
 
+            const playerTurnMessage = document.querySelector('.player-turn');
             // check if it's your turn
             if (playerArray[0].player.playerTurn == myPlayerIndex) {
                 textInput.style.display = "inline";
@@ -501,6 +502,8 @@ function setup() {
                     displayText.innerHTML = "";
                     resetTurnText = true;
                 }
+
+                playerTurnMessage.style.display = "none";
             }
             else {
                 textInput.style.display = "none";
@@ -508,6 +511,8 @@ function setup() {
                 yourTurn = false;
                 displayText.innerHTML = playerArray[playerTurn].player.typing;
                 resetTurnText = false;
+                playerTurnMessage.innerHTML = playerArray[playerTurn].player.name + "\'s turn";
+                playerTurnMessage.style.display = "block";
             }
 
             // display the prompt you get from the host
