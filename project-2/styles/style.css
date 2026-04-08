@@ -506,10 +506,12 @@ option {
     padding: 15px;
     background-color: rgba(125, 125, 125, 0.1);
     border-radius: var(--radius);
-    justify-content: space-between;
+    justify-content: left;
     align-items: center;
     height: 3rem;
+    position: relative;
     overflow: hidden;
+    padding-left: 60px;
 }
 
 .player-item-avatar {
@@ -517,6 +519,8 @@ option {
     height: 64px;
     margin-top: 10px;
     margin-left: -16px;
+    position: absolute;
+    left: 13px;
 }
 
 .play-button {

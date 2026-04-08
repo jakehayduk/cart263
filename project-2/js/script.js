@@ -25,7 +25,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
 import { getAuth } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js'
-import { getDatabase, get, set, ref, push, onDisconnect, remove, update, onValue, onChildAdded, onChildRemoved } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js'
+import { getDatabase, get, set, ref, push, onDisconnect, remove, update, onValue, onChildAdded, onChildRemoved, query, orderByChild } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js'
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -388,7 +388,9 @@ function setup() {
 
         // set the base variables for your player in Firebase
         const dictName = document.querySelector("#dropdown").value;
+        const date = new Date();
         set(selfPlayerRef, {
+            timestamp: date.getTime(),
             name: name,
             coins: coins,
             avatar: avatar,
@@ -417,27 +419,54 @@ function setup() {
             })
 
             // display the players
-            let playerItems = document.getElementsByClassName("player-item");
-            for (let i = 0; i < playerItems.length; i++) {
-                playerItems[i].style.backgroundColor = "rgba(125, 125, 125, 0.1";
-                playerItems[i].style.color = "var(--primary)";
+            // let playerItems = document.getElementsByClassName("player-item");
+            document.querySelector(".players-container").innerHTML = "";
+            for (let i = 0; i < playerArray.length; i++) {
+                // playerItems[i].item.style.backgroundColor = "rgba(125, 125, 125, 0.1";
+                // playerItems[i].item.style.color = "var(--primary)";
+
+                // if (playerArray[i].playerKey == playerId) {
+                //     playerItems[i].item.style.backgroundColor = "var(--primary)";
+                //     playerItems[i].item.style.color = "var(--secondary)";
+                // }
+
+                // if (playerArray[i].player.host === true) {
+                //     playerItems[i].item.querySelector(".player-item-avatar").src = "./images/avatar-" + playerArray[i].player.avatar + "-crown.png"
+                // }
+                // else {
+                //     playerItems[i].item.querySelector(".player-item-avatar").src = "./images/avatar-" + playerArray[i].player.avatar + ".png"
+                // }
+
+                // if (i == playerArray[0].player.playerTurn) {
+                //     playerItems[i].item.style.backgroundColor = "var(--tertiary)";
+                //     playerItems[i].item.style.color = "var(--primary)";
+                // }
+
+                
+                const newPlayerItem = document.createElement('div');
+
+                newPlayerItem.innerHTML = "<img src='./images/avatar-" + playerArray[i].player.avatar + ".png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins;
+                newPlayerItem.className = "player-item";
 
                 if (playerArray[i].playerKey == playerId) {
-                    playerItems[i].style.backgroundColor = "var(--primary)";
-                    playerItems[i].style.color = "var(--secondary)";
+                    newPlayerItem.style.backgroundColor = "var(--primary)";
+                    newPlayerItem.style.color = "var(--secondary)";
                 }
 
                 if (playerArray[i].player.host === true) {
-                    playerItems[i].querySelector(".player-item-avatar").src = "./images/avatar-" + playerArray[i].player.avatar + "-crown.png"
+                    newPlayerItem.querySelector(".player-item-avatar").src = "./images/avatar-" + playerArray[i].player.avatar + "-crown.png"
                 }
+
                 else {
-                    playerItems[i].querySelector(".player-item-avatar").src = "./images/avatar-" + playerArray[i].player.avatar + ".png"
+                    newPlayerItem.querySelector(".player-item-avatar").src = "./images/avatar-" + playerArray[i].player.avatar + ".png"
                 }
 
                 if (i == playerArray[0].player.playerTurn) {
-                    playerItems[i].style.backgroundColor = "var(--tertiary)";
-                    playerItems[i].style.color = "var(--primary)";
+                    newPlayerItem.style.backgroundColor = "var(--tertiary)";
+                    newPlayerItem.style.color = "var(--primary)";
                 }
+
+                document.querySelector(".players-container").appendChild(newPlayerItem);
                 // if player is you and not the host
                 // if (playerArray[i].playerKey == playerId && playerArray[i].player.host === false && i !== playerArray[0].player.playerTurn) {
                 //     htmlContent += "<div class='player-item' style='background-color: var(--primary); color: var(--secondary)'><img src='./images/avatar-" + playerArray[i].player.avatar + ".png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
@@ -545,22 +574,34 @@ function setup() {
             document.querySelector('.prompt').textContent = prompt.toUpperCase();
         })
 
-        onChildAdded(playerRef, (snapshot) => {
-            const newPlayer = snapshot.val();
-            const newPlayerKey = snapshot.key;
-
-            const newPlayerItem = document.createElement('div');
-
-            newPlayerItem.innerHTML = "<img src='./images/avatar-" + newPlayer.avatar + ".png' class='player-item-avatar'>" + newPlayer.name + " &bullet; " + newPlayer.coins;
-            newPlayerItem.className = "player-item";
-
-            document.querySelector(".players-container").appendChild(newPlayerItem);
+        // let playerItems = [];
+        // onChildAdded(playerRef, (snapshot) => {
+        //     const newPlayer = snapshot.val();
+        //     const newPlayerKey = snapshot.key;
             
-            // updatePlayerList();
-        })
+        //     const newPlayerItem = document.createElement('div');
+
+        //     newPlayerItem.innerHTML = "<img src='./images/avatar-" + newPlayer.avatar + ".png' class='player-item-avatar'>" + newPlayer.name + " &bullet; " + newPlayer.coins;
+        //     newPlayerItem.className = "player-item";
+        //     newPlayerItem.id = newPlayerKey;
+
+        //     playerItems.push({timestamp: newPlayer.timestamp, item: newPlayerItem, key: newPlayerKey});
+        //     playerItems.sort(function(x, y){
+        //         return x.timestamp - y.timestamp;
+        //     })
+        //     // console.log(playerItems);
+            
+        //     for (let i = 0; i < playerItems.length; i++) {
+        //         console.log(playerItems[i]);
+        //         document.querySelector(".players-container").appendChild(playerItems[i].item);
+        //     }
+        // })
 
         // onChildRemoved(playerRef, (snapshot) => {
-        //     updatePlayerList();
+        //     const removePlayerKey = snapshot.key;
+        //     // const index = playerItems.indexOf(removePlayerKey);
+        //     // console.log(index);
+        //     document.getElementById(removePlayerKey).remove();
         // })
 
         // function updatePlayerList() {
