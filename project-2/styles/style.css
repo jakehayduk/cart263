@@ -496,7 +496,7 @@ option {
     display: flex;
     flex-direction: column;
     left: 30px;
-    top: 130px;
+    top: 180px;
     font-size: 1.2rem;
     gap: 10px;
 }
@@ -635,6 +635,10 @@ option {
 
     .coins p span {
         display: none;
+    }
+
+    .players-container {
+        top: 130px;
     }
 }
 
