@@ -74,6 +74,8 @@ function setup() {
     let answerPrompts = [];
     let answerStreaks = [];
     let avatar = 1;
+    let yourTurnTrigger = false;
+    let turnTimer;
 
     // load sounds
     let sound1 = new Audio('./sounds/sound-1.mp3');
@@ -334,6 +336,9 @@ function setup() {
                     update(selfPlayerRef, {
                         typing: ""
                     })
+
+                    yourTurnTrigger = false;
+                    clearTimeout(turnTimer);
                 }
 
                 else {
@@ -555,10 +560,43 @@ function setup() {
                     playerTurnMessage.style.display = "none";
                     displayText.style.opacity = "1";
                     document.querySelector(".prompt-container").style.opacity = "1";
+
+                    if (yourTurnTrigger === false) {
+                        console.log("TRIGGER");
+                        textInput.value = "";
+                        yourTurnTrigger = true;
+
+                        turnTimer = setTimeout(function() {
+                            console.log("TIMER DONE");
+                            
+                            // Log this back in if you want the prompt to change after someone's timer runs out
+                            // prompt = newPrompt();
+
+                            // next player's turn
+                            if (playerTurn >= playerArray.length - 1) {
+                                playerTurn = 0;
+                            }
+                            else {
+                                playerTurn ++; 
+                            }
+
+                            // update the host variables with the player turn and prompt
+                            update(ref(db, "players/" + playerArray[0].playerKey), {
+                                playerTurn: playerTurn,
+                                prompt: prompt
+                            })
+
+                            update(selfPlayerRef, {
+                                typing: ""
+                            })
+                        }, 5000)
+                    }
                 }
                 else {
                     textInput.style.display = "none";
                     yourTurn = false;
+                    yourTurnTrigger = false;
+                    clearTimeout(turnTimer);
                     displayText.innerHTML = playerArray[playerTurn].player.typing;
                     resetTurnText = false;
                     playerTurnMessage.innerHTML = playerArray[playerTurn].player.name + "\'s turn";
