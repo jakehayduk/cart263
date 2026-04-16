@@ -602,8 +602,10 @@ function setup() {
                         document.querySelector(".prompt-container").style.opacity = "1";
 
                         if (yourTurnTrigger === false) {
+                            if (playerArray.length > 1) {
+                                
+                            }
                             yourTurnTrigger = true;
-                            console.log("test");
                             
                             if (playerArray.length > 1  && playerArray[myPlayerIndex].player.health > 0) {
                                 textInput.value = "";
@@ -642,15 +644,13 @@ function setup() {
                                 }, 10000)
                             }
                             
-                            if (playerArray.length > 1) {
-                                streakTimer = setTimeout(function() {
-                                    winStreak = 0;
-                                    console.log("END STREAK");
-                                    update(selfPlayerRef, {
-                                        winStreak: false
-                                    })
-                                }, 5000)
-                            }
+                            streakTimer = setTimeout(function() {
+                                winStreak = 0;
+                                console.log("END STREAK");
+                                update(selfPlayerRef, {
+                                    winStreak: false
+                                })
+                            }, 5000)
                         }
 
                         // skip your turn if you're dead
