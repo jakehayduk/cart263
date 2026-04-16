@@ -394,6 +394,7 @@ function setup() {
         let playerTurn = 0;
         let yourTurn = false;
         let resetTurnText = false;
+        let waiting = false
 
         // if you close the window or refresh the page, remove your player node from the database
         onDisconnect(selfPlayerRef).remove();
@@ -405,7 +406,8 @@ function setup() {
                     const player = playerSnapshot.val();
 
                     if (player.playing === true) {
-                        console.log("host is playing");
+                        waiting = true;
+                        document.querySelector(".waiting").textContent = "Waiting for " + player.name + "\'s game to end"
                     }
                     else {
                         createPlayer();
@@ -725,18 +727,8 @@ function setup() {
                     }
                 }, 100)
             }
-            
-            
-            // if (playerArray[0].player.joined == true) {
-
-            // }
-
-            
         })
-        setTimeout(function() {
-        console.log(playerArray[0]);
-
-        }, 200)
+        
         
         // if (playerArray[0].player.playing === true) {
         //     update(selfPlayerRef, {
@@ -871,12 +863,19 @@ function setup() {
             document.querySelector(".displayText").style.display = "none";
             document.querySelector(".dictionaries p").textContent = "dictionary: ";
             document.querySelector('.player-turn').style.display = "none";
+            document.querySelector(".waiting").textContent = "Waiting for host to start"
 
-            update(selfPlayerRef, {
-                health: 100,
-                playing: false,
-                // waiting: false
-            })
+            if (waiting === false) {
+                update(selfPlayerRef, {
+                    health: 100,
+                    playing: false,
+                    // waiting: false
+                })
+            }
+            else {
+                createPlayer();
+            }
+            
 
             playerTurn = 0
             if (host === true) {
