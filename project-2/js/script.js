@@ -25,7 +25,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
 import { getAuth } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js'
-import { getDatabase, get, set, ref, push, onDisconnect, remove, update, onValue, onChildAdded, onChildRemoved, query, orderByChild } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js'
+import { getDatabase, get, set, ref, push, onDisconnect, remove, update, onValue, onChildAdded, onChildRemoved, query, orderByChild, limitToFirst } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js'
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -351,6 +351,13 @@ function setup() {
                         displayText.style.color = "var(--primary)";
                         displayText.style.animation = "none";
                     }, 500)
+
+                    // knock some health off
+                    if (playerArray[playerTurn].player.health > 0) {
+                        update(selfPlayerRef, {
+                            health: playerArray[playerTurn].player.health - 5
+                        })
+                    }
                 }
 
                 // at 5 consecutive correct answers, display the fire to indicate the player's win streak
@@ -361,7 +368,6 @@ function setup() {
                         winStreakSound = true;
                         soundFire.play();
                     }
-                    
                 }
 
                 else {
@@ -384,6 +390,7 @@ function setup() {
         playerId = selfPlayerRef.key;
 
         let playerArray = [];
+        let alivePlayers = [];
         let playerTurn = 0;
         let yourTurn = false;
         let resetTurnText = false;
@@ -391,193 +398,294 @@ function setup() {
         // if you close the window or refresh the page, remove your player node from the database
         onDisconnect(selfPlayerRef).remove();
 
-        // set the base variables for your player in Firebase
-        const dictName = document.querySelector("#dropdown").value;
-        const date = new Date();
-        set(selfPlayerRef, {
-            timestamp: date.getTime(),
-            name: name,
-            coins: coins,
-            avatar: avatar,
-            host: false,
-            dictionary: dictName,
-            difficulty: difficulty,
-            playerTurn: 0,
-            prompt: "er",
-            typing: ""
+        const firstPlayerQuery = query(playerRef, limitToFirst(1))
+        get(firstPlayerQuery).then((snapshot) => {
+            if (snapshot.exists()) {
+                snapshot.forEach((playerSnapshot) => {
+                    const player = playerSnapshot.val();
+
+                    if (player.playing === true) {
+                        console.log("host is playing");
+                    }
+                    else {
+                        createPlayer();
+                    }
+                })
+            }
+            else {
+                createPlayer();
+            }
         })
+
+        function createPlayer() {
+            // set the base variables for your player in Firebase
+            const date = new Date();
+            set(selfPlayerRef, {
+                timestamp: date.getTime(),
+                name: name,
+                coins: coins,
+                health: 0,
+                avatar: avatar,
+                host: false,
+                dictionary: dictName,
+                difficulty: difficulty,
+                playerTurn: 0,
+                prompt: "er",
+                typing: "",
+                playing: false,
+                waiting: false
+            })
+        }
+
+
+        const dictName = document.querySelector("#dropdown").value;
+        
 
         // this function fires when player values are updated
         onValue(playerRef, (snapshot) => {
+            if (snapshot.exists()) {
+                const playerContainer = document.querySelector(".players-container");
+                let htmlContent = "";
+                playerArray = [];
+                // loop through the player objects and push them into a local array, along with the respective player keys
+                snapshot.forEach((playerSnapshot) => {
+                    const player = playerSnapshot.val();
+                    const playerKey = playerSnapshot.key;
 
-            const playerContainer = document.querySelector(".players-container");
-            let htmlContent = "";
-            playerArray = [];
-            // loop through the player objects and push them into a local array, along with the respective player keys
-            snapshot.forEach((playerSnapshot) => {
-                const player = playerSnapshot.val();
-                const playerKey = playerSnapshot.key;
+                    // if (player.waiting === false) {
+                        playerArray.push({playerKey, player});
+                    // }
 
-                playerArray.push({playerKey, player});
+                    // MAYBE IT WOULD BE COOL TO HAVE A FEW PRESET AVATARS THAT WE CAN CHOOSE FROM TO DISPLAY IN THE GAME
+                })
 
-                // MAYBE IT WOULD BE COOL TO HAVE A FEW PRESET AVATARS THAT WE CAN CHOOSE FROM TO DISPLAY IN THE GAME
-            })
-
-            // display the players
-            // let playerItems = document.getElementsByClassName("player-item");
-            document.querySelector(".players-container").innerHTML = "";
-            for (let i = 0; i < playerArray.length; i++) {
-                // playerItems[i].item.style.backgroundColor = "rgba(125, 125, 125, 0.1";
-                // playerItems[i].item.style.color = "var(--primary)";
-
-                // if (playerArray[i].playerKey == playerId) {
-                //     playerItems[i].item.style.backgroundColor = "var(--primary)";
-                //     playerItems[i].item.style.color = "var(--secondary)";
-                // }
-
-                // if (playerArray[i].player.host === true) {
-                //     playerItems[i].item.querySelector(".player-item-avatar").src = "./images/avatar-" + playerArray[i].player.avatar + "-crown.png"
-                // }
-                // else {
-                //     playerItems[i].item.querySelector(".player-item-avatar").src = "./images/avatar-" + playerArray[i].player.avatar + ".png"
-                // }
-
-                // if (i == playerArray[0].player.playerTurn) {
-                //     playerItems[i].item.style.backgroundColor = "var(--tertiary)";
-                //     playerItems[i].item.style.color = "var(--primary)";
-                // }
-
+                // display the players
+                // let playerItems = document.getElementsByClassName("player-item");
+                document.querySelector(".players-container").innerHTML = "";
                 
-                const newPlayerItem = document.createElement('div');
+                // console.log(alivePlayers);
+                // console.log(playerArray[0])
+                for (let i = 0; i < playerArray.length; i++) {
+                    // playerItems[i].item.style.backgroundColor = "rgba(125, 125, 125, 0.1";
+                    // playerItems[i].item.style.color = "var(--primary)";
 
-                newPlayerItem.innerHTML = "<img src='./images/avatar-" + playerArray[i].player.avatar + ".png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins;
-                newPlayerItem.className = "player-item";
+                    // if (playerArray[i].playerKey == playerId) {
+                    //     playerItems[i].item.style.backgroundColor = "var(--primary)";
+                    //     playerItems[i].item.style.color = "var(--secondary)";
+                    // }
 
-                if (playerArray[i].playerKey == playerId) {
-                    newPlayerItem.style.backgroundColor = "var(--primary)";
-                    newPlayerItem.style.color = "var(--secondary)";
-                }
+                    // if (playerArray[i].player.host === true) {
+                    //     playerItems[i].item.querySelector(".player-item-avatar").src = "./images/avatar-" + playerArray[i].player.avatar + "-crown.png"
+                    // }
+                    // else {
+                    //     playerItems[i].item.querySelector(".player-item-avatar").src = "./images/avatar-" + playerArray[i].player.avatar + ".png"
+                    // }
 
-                if (playerArray[i].player.host === true) {
-                    newPlayerItem.querySelector(".player-item-avatar").src = "./images/avatar-" + playerArray[i].player.avatar + "-crown.png"
-                }
+                    // if (i == playerArray[0].player.playerTurn) {
+                    //     playerItems[i].item.style.backgroundColor = "var(--tertiary)";
+                    //     playerItems[i].item.style.color = "var(--primary)";
+                    // }
 
-                else {
-                    newPlayerItem.querySelector(".player-item-avatar").src = "./images/avatar-" + playerArray[i].player.avatar + ".png"
-                }
+                    
+                    const newPlayerItem = document.createElement('div');
 
-                if (i == playerArray[0].player.playerTurn) {
-                    newPlayerItem.style.backgroundColor = "var(--tertiary)";
-                    newPlayerItem.style.color = "var(--primary)";
-                }
+                    newPlayerItem.innerHTML = "<img src='./images/avatar-" + playerArray[i].player.avatar + ".png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "<div class='health'></div";
+                    newPlayerItem.className = "player-item";
 
-                document.querySelector(".players-container").appendChild(newPlayerItem);
-                // if player is you and not the host
-                // if (playerArray[i].playerKey == playerId && playerArray[i].player.host === false && i !== playerArray[0].player.playerTurn) {
-                //     htmlContent += "<div class='player-item' style='background-color: var(--primary); color: var(--secondary)'><img src='./images/avatar-" + playerArray[i].player.avatar + ".png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
-                // }
-                // // if the player is not you but is the host
-                // else if (playerArray[i].player.host === true && playerArray[i].playerKey !== playerId && i !== playerArray[0].player.playerTurn) {
-                //     htmlContent += "<div class='player-item'><img src='./images/avatar-" + playerArray[i].player.avatar + "-crown.png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
-                // }
-                // // if the player is you and is the host
-                // else if (playerArray[i].player.host === true && playerArray[i].playerKey == playerId && i !== playerArray[0].player.playerTurn) {
-                //     htmlContent += "<div class='player-item' style='background-color: var(--primary); color: var(--secondary)'><img src='./images/avatar-" + playerArray[i].player.avatar + "-crown.png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
-                // }
-                // // if it's the player's turn and they are not host
-                // else if (i == playerArray[0].player.playerTurn && playerArray[i].player.host === false && gameOn === true) {
-                //     htmlContent += "<div class='player-item' style='background-color: var(--tertiary); color: var(--primary);'><img src='./images/avatar-" + playerArray[i].player.avatar + ".png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
-                // }
-                // // if it's the player's turn and they are host
-                // else if (i == playerArray[0].player.playerTurn && playerArray[i].player.host === true && gameOn === true) {
-                //     htmlContent += "<div class='player-item' style='background-color: var(--tertiary); color: var(--primary);'><img src='./images/avatar-" + playerArray[i].player.avatar + "-crown.png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
-                // }
-                // // if the player is anything else
-                // else {
-                //     htmlContent += "<div class='player-item'><img src='./images/avatar-" + playerArray[i].player.avatar + ".png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
-                // }
-            }
-
-            // playerContainer.innerHTML = htmlContent;
-            
-            // if your player ID matches the player ID of the first player in the array we got from the database, it means you joined first or you are the only player who has joined, and you are the host or controller of the game
-            if (gameOn === false) {
-                if (playerArray[0].playerKey == playerId) {
-                    console.log("you are host");
-                    host = true;
-                    // set your host value to true
-                    update(selfPlayerRef, {
-                        host: true
-                    })
-
-                    document.querySelector(".play-button").style.display = "block";
-                    document.querySelector(".waiting").style.display = "none";
-                }
-
-                // everyone else
-                else {
-                    host = false;
-                    changeDictionary(playerArray[0].player.dictionary);
-                    difficulty = playerArray[0].player.difficulty;
-                    document.querySelector(".difficulty p").textContent = "difficulty: " + difficulty;
-                    document.querySelector(".slider").style.display = "none";
-                    document.querySelector("#dropdown").style.display = "none";
-                    document.querySelector(".dictionaries p").textContent = "dictionary: " + document.querySelector("#dropdown").value;
-                    textInput.focus();
-                    textInput.value = "";
-                    displayText.innerHTML = "";
-                    document.querySelector(".play-button").style.display = "none";
-                    document.querySelector(".waiting").style.display = "block";
-                }
-            }
-            
-            if (playerArray[0].player.startGame === true) {
-                if (host === true) {
-                    update(ref(db, "players/" + playerArray[0].playerKey), {
-                        startGame: false
-                    })
-                }
-                
-                startGame();
-            }
-
-            playerTurn = playerArray[0].player.playerTurn;
-            // get the index number of your player object in the playerArray
-            const myPlayerIndex = playerArray.findIndex(player => player.playerKey === playerId);
-
-            const playerTurnMessage = document.querySelector('.player-turn');
-            // check if it's your turn
-            if (gameOn === true) {
-                if (playerArray[0].player.playerTurn == myPlayerIndex) {
-                    textInput.style.display = "inline";
-                    textInput.focus();
-                    yourTurn = true;
-                    if (resetTurnText === false) {
-                        displayText.innerHTML = "";
-                        resetTurnText = true;
+                    if (playerArray[i].playerKey == playerId) {
+                        newPlayerItem.style.backgroundColor = "var(--primary)";
+                        newPlayerItem.style.color = "var(--secondary)";
                     }
 
-                    playerTurnMessage.style.display = "none";
-                    displayText.style.opacity = "1";
-                    document.querySelector(".prompt-container").style.opacity = "1";
+                    if (playerArray[i].player.host === true) {
+                        newPlayerItem.querySelector(".player-item-avatar").src = "./images/avatar-" + playerArray[i].player.avatar + "-crown.png"
+                    }
 
-                    if (yourTurnTrigger === false) {
-                        console.log("TRIGGER");
+                    else {
+                        newPlayerItem.querySelector(".player-item-avatar").src = "./images/avatar-" + playerArray[i].player.avatar + ".png"
+                    }
+
+                    if (gameOn) {
+                        if (i == playerArray[0].player.playerTurn) {
+                            newPlayerItem.style.backgroundColor = "rgb(from var(--tertiary) r g b / 0.3)";
+                            newPlayerItem.style.color = "var(--primary)";
+                        }
+
+                        newPlayerItem.querySelector(".health").style.width = playerArray[i].player.health + "%";
+
+                        if (playerArray[i].player.health <= 0) {
+                            newPlayerItem.style.filter = "grayscale() brightness(80%)";
+                        }
+                    }
+                    else {
+                        newPlayerItem.querySelector(".health").style.width = "0%";
+                    }
+                    
+
+                    document.querySelector(".players-container").appendChild(newPlayerItem);
+
+                    // if (playerArray[0].player.playing == true && playerArray[i].player.playing == true) {
+                    //     update(selfPlayerRef, {
+                    //         waiting: true
+                    //     })
+                    // }
+                    // if player is you and not the host
+                    // if (playerArray[i].playerKey == playerId && playerArray[i].player.host === false && i !== playerArray[0].player.playerTurn) {
+                    //     htmlContent += "<div class='player-item' style='background-color: var(--primary); color: var(--secondary)'><img src='./images/avatar-" + playerArray[i].player.avatar + ".png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
+                    // }
+                    // // if the player is not you but is the host
+                    // else if (playerArray[i].player.host === true && playerArray[i].playerKey !== playerId && i !== playerArray[0].player.playerTurn) {
+                    //     htmlContent += "<div class='player-item'><img src='./images/avatar-" + playerArray[i].player.avatar + "-crown.png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
+                    // }
+                    // // if the player is you and is the host
+                    // else if (playerArray[i].player.host === true && playerArray[i].playerKey == playerId && i !== playerArray[0].player.playerTurn) {
+                    //     htmlContent += "<div class='player-item' style='background-color: var(--primary); color: var(--secondary)'><img src='./images/avatar-" + playerArray[i].player.avatar + "-crown.png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
+                    // }
+                    // // if it's the player's turn and they are not host
+                    // else if (i == playerArray[0].player.playerTurn && playerArray[i].player.host === false && gameOn === true) {
+                    //     htmlContent += "<div class='player-item' style='background-color: var(--tertiary); color: var(--primary);'><img src='./images/avatar-" + playerArray[i].player.avatar + ".png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
+                    // }
+                    // // if it's the player's turn and they are host
+                    // else if (i == playerArray[0].player.playerTurn && playerArray[i].player.host === true && gameOn === true) {
+                    //     htmlContent += "<div class='player-item' style='background-color: var(--tertiary); color: var(--primary);'><img src='./images/avatar-" + playerArray[i].player.avatar + "-crown.png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
+                    // }
+                    // // if the player is anything else
+                    // else {
+                    //     htmlContent += "<div class='player-item'><img src='./images/avatar-" + playerArray[i].player.avatar + ".png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "</div>"
+                    // }
+                }
+
+                // playerContainer.innerHTML = htmlContent;
+                
+                // if your player ID matches the player ID of the first player in the array we got from the database, it means you joined first or you are the only player who has joined, and you are the host or controller of the game
+                if (gameOn === false) {
+                    if (playerArray[0].playerKey == playerId) {
+                        console.log("you are host");
+                        host = true;
+                        // set your host value to true
+                        update(selfPlayerRef, {
+                            host: true
+                        })
+
+                        document.querySelector(".play-button").style.display = "block";
+                        document.querySelector(".waiting").style.display = "none";
+                    }
+
+                    // everyone else
+                    else {
+                        host = false;
+                        changeDictionary(playerArray[0].player.dictionary);
+                        difficulty = playerArray[0].player.difficulty;
+                        document.querySelector(".difficulty p").textContent = "difficulty: " + difficulty;
+                        document.querySelector(".slider").style.display = "none";
+                        document.querySelector("#dropdown").style.display = "none";
+                        document.querySelector(".dictionaries p").textContent = "dictionary: " + document.querySelector("#dropdown").value;
+                        textInput.focus();
                         textInput.value = "";
-                        yourTurnTrigger = true;
+                        displayText.innerHTML = "";
+                        document.querySelector(".play-button").style.display = "none";
+                        document.querySelector(".waiting").style.display = "block";
+                    }
+                }
+                
+                if (playerArray[0].player.startGame === true) {
+                    if (host === true) {
+                        update(ref(db, "players/" + playerArray[0].playerKey), {
+                            startGame: false
+                        })
+                    }
+                    
+                    startGame();
+                }
 
-                        turnTimer = setTimeout(function() {
-                            console.log("TIMER DONE");
-                            
-                            // Log this back in if you want the prompt to change after someone's timer runs out
-                            // prompt = newPrompt();
+                if (playerArray[0].player.endGame === true) {
+                    if (host === true) {
+                        update(ref(db, "players/" + playerArray[0].playerKey), {
+                            endGame: false
+                        })
+                    }
+                    
+                    endGame();
+                }
 
+                playerTurn = playerArray[0].player.playerTurn;
+                // get the index number of your player object in the playerArray
+                const myPlayerIndex = playerArray.findIndex(player => player.playerKey === playerId);
+
+                // if (playerArray[0].player.playing === true && playerArray[myPlayerIndex].player.playing === false) {
+                //     update(selfPlayerRef, {
+                //         waiting: true
+                //     })
+                // }
+
+                const playerTurnMessage = document.querySelector('.player-turn');
+                // check if it's your turn
+                if (gameOn === true) {
+                    if (playerArray[0].player.playerTurn == myPlayerIndex) {
+                        textInput.style.display = "inline";
+                        textInput.focus();
+                        yourTurn = true;
+                        if (resetTurnText === false) {
+                            displayText.innerHTML = "";
+                            resetTurnText = true;
+                        }
+
+                        playerTurnMessage.style.display = "none";
+                        displayText.style.opacity = "1";
+                        document.querySelector(".prompt-container").style.opacity = "1";
+
+                        if (yourTurnTrigger === false && playerArray.length > 1  && playerArray[myPlayerIndex].player.health > 0) {
+                            textInput.value = "";
+                            yourTurnTrigger = true;
+                            // when the timer runs out, knock health and go to next player
+                            turnTimer = setTimeout(function() {
+                                console.log("TIMER DONE");
+                                
+                                // Log this back in if you want the prompt to change after someone's timer runs out
+                                // prompt = newPrompt();
+
+                                // next player's turn
+                                if (playerTurn >= playerArray.length - 1) {
+                                    playerTurn = 0;
+                                }
+                                else {
+                                    playerTurn ++;
+                                }
+
+                                // update the host variables with the player turn and prompt
+                                update(ref(db, "players/" + playerArray[0].playerKey), {
+                                    playerTurn: playerTurn,
+                                    prompt: prompt
+                                })
+
+                                const promptIndex = bigrams.findIndex(row => row[0] === prompt);
+
+                                let newHealth = playerArray[myPlayerIndex].player.health - (bigrams.length - promptIndex) / 15;
+
+                                if (newHealth <= 0) {
+                                    newHealth = 0;
+                                }
+                                
+                                update(selfPlayerRef, {
+                                    typing: "",
+                                    health: newHealth
+                                })
+                                // come back
+                            }, 5000)
+                        }
+
+                        // skip your turn if you're dead
+                        else if (playerArray.length > 1 && playerArray[myPlayerIndex].player.health <= 0 && alivePlayers.length > 0) {
+
+                            if (alivePlayers.length == 1) {
+                                prompt = newPrompt();
+                            }
                             // next player's turn
                             if (playerTurn >= playerArray.length - 1) {
                                 playerTurn = 0;
                             }
                             else {
-                                playerTurn ++; 
+                                playerTurn ++;
                             }
 
                             // update the host variables with the player turn and prompt
@@ -585,32 +693,56 @@ function setup() {
                                 playerTurn: playerTurn,
                                 prompt: prompt
                             })
-
-                            update(selfPlayerRef, {
-                                typing: ""
-                            })
-                        }, 5000)
+                        }
+                    }
+                    else {
+                        textInput.style.display = "none";
+                        yourTurn = false;
+                        yourTurnTrigger = false;
+                        clearTimeout(turnTimer);
+                        displayText.innerHTML = playerArray[playerTurn].player.typing;
+                        resetTurnText = false;
+                        playerTurnMessage.innerHTML = playerArray[playerTurn].player.name + "\'s turn";
+                        playerTurnMessage.style.display = "block";
+                        displayText.style.opacity = "0.7";
+                        document.querySelector(".prompt-container").style.opacity = "0.7";
                     }
                 }
-                else {
-                    textInput.style.display = "none";
-                    yourTurn = false;
-                    yourTurnTrigger = false;
-                    clearTimeout(turnTimer);
-                    displayText.innerHTML = playerArray[playerTurn].player.typing;
-                    resetTurnText = false;
-                    playerTurnMessage.innerHTML = playerArray[playerTurn].player.name + "\'s turn";
-                    playerTurnMessage.style.display = "block";
-                    displayText.style.opacity = "0.7";
-                    document.querySelector(".prompt-container").style.opacity = "0.7";
-                }
+                
+
+                // display the prompt you get from the host
+                prompt = playerArray[0].player.prompt;
+                document.querySelector('.prompt').textContent = prompt.toUpperCase();
+
+                // if no more players are alive, the game is over
+                alivePlayers = playerArray.filter(player => player.player.health > 0);
+                setTimeout(function() {
+                    
+                    if (host === true && alivePlayers.length <= 0 && gameOn === true) {
+                        update(selfPlayerRef, {
+                            endGame: true
+                        })
+                    }
+                }, 100)
             }
             
+            
+            // if (playerArray[0].player.joined == true) {
 
-            // display the prompt you get from the host
-            prompt = playerArray[0].player.prompt;
-            document.querySelector('.prompt').textContent = prompt.toUpperCase();
+            // }
+
+            
         })
+        setTimeout(function() {
+        console.log(playerArray[0]);
+
+        }, 200)
+        
+        // if (playerArray[0].player.playing === true) {
+        //     update(selfPlayerRef, {
+        //         waiting: true
+        //     })
+        // }
 
         // let playerItems = [];
         // onChildAdded(playerRef, (snapshot) => {
@@ -718,7 +850,38 @@ function setup() {
 
             if (host === true) {
                 update(selfPlayerRef, {
-                    prompt: prompt
+                    prompt: prompt,
+                })
+            }
+
+            update(selfPlayerRef, {
+                health: 100,
+                playing: true
+            })
+        }
+
+        function endGame() {
+            gameOn = false;
+            document.querySelector(".slider").style.display = "block";
+            document.querySelector(".play-button").style.display = "block";
+            // document.querySelector(".waiting").style.display = "block";
+            document.querySelector("#dropdown").style.display = "block";
+            document.querySelector(".prompt-container").style.display = "none";
+            document.querySelector("#textInput").style.display = "none";
+            document.querySelector(".displayText").style.display = "none";
+            document.querySelector(".dictionaries p").textContent = "dictionary: ";
+            document.querySelector('.player-turn').style.display = "none";
+
+            update(selfPlayerRef, {
+                health: 100,
+                playing: false,
+                // waiting: false
+            })
+
+            playerTurn = 0
+            if (host === true) {
+                update(selfPlayerRef, {
+                    playerTurn: 0
                 })
             }
         }
