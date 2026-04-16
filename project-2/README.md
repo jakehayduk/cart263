@@ -23,3 +23,6 @@ A game of making words with given bigrams
     - Gain 3 extra coins for maintaining a win streak of 5 or more
 
 - Screen grabs:
+![Titlescreen Screenshot](./images/title.PNG)
+![Gameplay Screenshot](./images/game.PNG)
+![Menu Screenshot](./images/menu.PNG)
