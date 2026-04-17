@@ -195,7 +195,12 @@ function setup() {
 
                 // if the dictionary includes the typed answer, the typed answer includes the given prompt, is longer than 2 characters, and hasn't been typed already yet, the output is correct
                 if ((result == true || result2 == true) && checkInclude == true && answer.length > 2 && checkDuplicates == false) {
+                    clearTimeout(turnTimer);
+                    clearTimeout(streakTimer);
+                    yourTurnTrigger = false;
+
                     usedWords.push(answer);
+
                     textInput.value = "";
                     
                     // add 1 coin for each correct answer, 3 more for words longer than 14 characters, and 3 more for hyphenated words
@@ -345,20 +350,6 @@ function setup() {
                     update(selfPlayerRef, {
                         typing: ""
                     })
-
-                    // if (playerArray.length === 1) {
-                    //     streakTimer = setTimeout(function() {
-                    //         winStreak = 0;
-                    //         console.log("end streak")
-                    //         update(selfPlayerRef, {
-                    //             winStreak: false
-                    //         })
-                    //     }, 5000)
-                    // }
-
-                    yourTurnTrigger = false;
-                    clearTimeout(turnTimer);
-                    clearTimeout(streakTimer);
                 }
 
                 else {
@@ -385,18 +376,14 @@ function setup() {
                 }
 
                 // at 5 consecutive correct answers, display the fire to indicate the player's win streak
-                if (winStreak > 4) {
-                    document.querySelector(".fire").style.display = "block";
-                    
+                if (winStreak > 5) {                    
                     if (!winStreakSound) {
                         winStreakSound = true;
                         soundFire.play();
                     }
                 }
-
                 else {
                     winStreakSound = false;
-                    document.querySelector(".fire").style.display = "none";
                 }
             }
         })
@@ -490,7 +477,7 @@ function setup() {
 
                     const newPlayerItem = document.createElement('div');
 
-                    newPlayerItem.innerHTML = "<img src='./images/avatar-" + playerArray[i].player.avatar + ".png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "<div class='health'></div";
+                    newPlayerItem.innerHTML = "<img src='./images/avatar-" + playerArray[i].player.avatar + ".png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "<div class='health'></div><img src='./images/fire.gif' class='fire'>";
                     newPlayerItem.className = "player-item";
 
                     // if the player is you
@@ -520,6 +507,13 @@ function setup() {
                         // if they're dead
                         if (playerArray[i].player.health <= 0) {
                             newPlayerItem.style.filter = "grayscale() brightness(80%)";
+                        }
+
+                        if (playerArray[i].player.winStreak === true) {
+                            newPlayerItem.querySelector(".fire").style.display = "block";
+                        }
+                        else {
+                            newPlayerItem.querySelector(".fire").style.display = "none";
                         }
                     }
                     else {
@@ -600,11 +594,9 @@ function setup() {
                         playerTurnMessage.style.display = "none";
                         displayText.style.opacity = "1";
                         document.querySelector(".prompt-container").style.opacity = "1";
-
+                        console.log(yourTurnTrigger);
                         if (yourTurnTrigger === false) {
-                            if (playerArray.length > 1) {
-                                
-                            }
+                            console.log("test");
                             yourTurnTrigger = true;
                             
                             if (playerArray.length > 1  && playerArray[myPlayerIndex].player.health > 0) {
@@ -644,6 +636,7 @@ function setup() {
                                 }, 10000)
                             }
                             
+                            console.log("STREAKING THE TIMER");
                             streakTimer = setTimeout(function() {
                                 winStreak = 0;
                                 console.log("END STREAK");
@@ -771,6 +764,7 @@ function setup() {
             if (host === true) {
                 update(selfPlayerRef, {
                     prompt: prompt,
+                    usedWords: []
                 })
             }
 
@@ -983,7 +977,6 @@ function setup() {
                 document.querySelector("select").style.backgroundColor = "var(--secondary)";
                 document.querySelector("select").style.color = "var(--primary)";
                 document.querySelector(".coins").style.color = "var(--secondary)";
-                document.querySelector(".timer").style.color = "var(--secondary)";
                 document.querySelector(".dictionaries").style.color = "var(--secondary)";
                 document.querySelector(".difficulty").style.color = "var(--secondary)";
                 settingsOpen = true;
@@ -995,7 +988,6 @@ function setup() {
             document.querySelector("select").style.backgroundColor = "var(--primary)";
             document.querySelector("select").style.color = "var(--secondary)";
             document.querySelector(".coins").style.color = "var(--primary)";
-            document.querySelector(".timer").style.color = "var(--primary)";
             document.querySelector(".dictionaries").style.color = "var(--primary)";
             document.querySelector(".difficulty").style.color = "var(--primary)";
             settingsOpen = false;

@@ -211,9 +211,10 @@ header {
 .fire {
     position: absolute;
     display: none;
-    width: 56px;
+    width: 96px;
     top: -30px;
-    right: -30px;
+    left: -18px;
+    z-index: 2;
     image-rendering: pixelated;
     filter: drop-shadow(0px 0px 30px rgb(255, 204, 0)) drop-shadow(0px 0px 15px rgb(255, 136, 0));
     z-index: 2;
@@ -521,6 +522,7 @@ option {
     margin-left: -16px;
     position: absolute;
     left: 13px;
+    z-index: 3;
 }
 
 .play-button {
@@ -597,6 +599,7 @@ option {
     height: 4px;
     background-color: var(--tertiary);
     left: 0;
+    z-index: 4;
 }
 
 /* MEDIA QUERIES */
