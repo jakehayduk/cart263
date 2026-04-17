@@ -168,6 +168,7 @@ function setup() {
     let gameOn = false;
     let name;
     let playerRef;
+    let messageRef;
     let selfPlayerRef;
     let playerId;
     let host = false;
@@ -399,6 +400,9 @@ function setup() {
 
         // reference all the player nodes in Firebase
         playerRef = ref(db, "players/");
+        
+        messageRef = ref(db, "messages/");
+
         // new player reference gets pushed into the database
         selfPlayerRef = push(playerRef);
         // get your player ID
@@ -746,6 +750,22 @@ function setup() {
             }
         })
 
+        let messagesOpen = false;
+        document.querySelector(".messages-button").addEventListener("click", function() {
+            if (!messagesOpen) {
+                document.querySelector(".messages-modal").style.right = "0vw";
+                document.querySelector(".messages-button").style.right = "calc(30vw + 10px)";
+                document.querySelector(".arrow").style.transform = "translate(-70%, -50%) rotate(-135deg)";
+                messagesOpen = true;
+            }
+            else {
+                document.querySelector(".messages-modal").style.right = "-33vw";
+                document.querySelector(".messages-button").style.right = "30px";
+                document.querySelector(".arrow").style.transform = "translate(-30%, -50%) rotate(45deg)";
+                messagesOpen = false;
+            }
+        })
+
         function startGame() {
             gameOn = true;
             document.querySelector(".slider").style.display = "none";
@@ -838,6 +858,30 @@ function setup() {
                 })
             }
         })
+
+        document.querySelector("#messageInput").addEventListener("keydown", function (e) {
+            if (e.which === 13 && this.value.length > 0) {
+                const newMessageRef = push(messageRef);
+
+                // Set the data at that new unique location
+                set(newMessageRef, {
+                    name: name,
+                    message: this.value
+                });
+                
+                this.value = "";
+            }
+        })
+
+        let addedMessage;
+        onChildAdded(messageRef, (snapshot) => {
+            addedMessage = snapshot.val();
+            document.querySelector(".messages").innerHTML = document.querySelector(".messages").innerHTML + "<br><b>" + addedMessage.name + ":</b> " + addedMessage.message;
+
+            document.querySelector(".messages").scrollTop = document.querySelector(".messages").scrollHeight;
+
+            sound1.play();
+        });
     }
 
     let elements = document.getElementsByClassName("avatar");
