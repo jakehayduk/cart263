@@ -672,6 +672,7 @@ function setup() {
                         yourTurn = false;
                         yourTurnTrigger = false;
                         clearTimeout(turnTimer);
+                        clearTimeout(streakTimer);
                         displayText.innerHTML = playerArray[playerTurn].player.typing;
                         resetTurnText = false;
                         playerTurnMessage.innerHTML = playerArray[playerTurn].player.name + "\'s turn";
@@ -764,7 +765,8 @@ function setup() {
             if (host === true) {
                 update(selfPlayerRef, {
                     prompt: prompt,
-                    usedWords: []
+                    usedWords: [],
+                    winStreak: 0
                 })
             }
 
