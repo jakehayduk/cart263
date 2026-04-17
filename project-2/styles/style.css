@@ -616,6 +616,7 @@ option {
     cursor: pointer;
     transition: all 0.3s;
     opacity: 0.3;
+    display: none;
 }
 
 .messages-button:hover {

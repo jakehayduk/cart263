@@ -859,6 +859,14 @@ function setup() {
             }
         })
 
+        document.querySelector(".messages-button").style.display = "block";
+        const joinMessageRef = push(messageRef);
+
+        // Set the data at that new unique location
+        set(joinMessageRef, {
+            name: name
+        });
+
         document.querySelector("#messageInput").addEventListener("keydown", function (e) {
             if (e.which === 13 && this.value.length > 0) {
                 const newMessageRef = push(messageRef);
@@ -876,11 +884,17 @@ function setup() {
         let addedMessage;
         onChildAdded(messageRef, (snapshot) => {
             addedMessage = snapshot.val();
-            document.querySelector(".messages").innerHTML = document.querySelector(".messages").innerHTML + "<br><b>" + addedMessage.name + ":</b> " + addedMessage.message;
+
+            if (addedMessage.message) {
+                document.querySelector(".messages").innerHTML = document.querySelector(".messages").innerHTML + "<br><b>" + addedMessage.name + ":</b> " + addedMessage.message;
+            }
+            else {
+                console.log("joined message");
+                document.querySelector(".messages").innerHTML = document.querySelector(".messages").innerHTML + "<br><span style='color: var(--tertiary)'><b>" + addedMessage.name + "</b> has joined the game</span>";
+            }
+            
 
             document.querySelector(".messages").scrollTop = document.querySelector(".messages").scrollHeight;
-
-            sound1.play();
         });
     }
 
