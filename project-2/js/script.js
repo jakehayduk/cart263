@@ -239,6 +239,10 @@ function setup() {
                     coinsChange += coinCount;
                     
                     document.querySelector(".coins p").innerHTML = "<span>coins: </span>" + coins;
+                    update(selfPlayerRef, {
+                        coins: coins
+                    })
+                    saveStateHandler();
 
                     // coin icon spins 360 deg every correct answer
                     coinSpin += 360;
@@ -737,6 +741,8 @@ function setup() {
                 update(selfPlayerRef, {
                     startGame: true
                 })
+
+                sound2.play();
             }
         })
 
@@ -795,7 +801,11 @@ function setup() {
                 })
             }
             else {
-                createPlayer();
+                
+                setTimeout(function() {
+                    waiting = false;
+                    createPlayer();
+                }, 300)
             }
             
 
