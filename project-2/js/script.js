@@ -25,7 +25,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
 import { getAuth } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js'
-import { getDatabase, get, set, ref, push, onDisconnect, remove, update, onValue, onChildAdded, onChildRemoved, query, orderByChild, limitToFirst } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js'
+import { getDatabase, get, set, ref, push, onDisconnect, remove, update, onValue, onChildAdded, onChildRemoved, query, orderByChild, limitToFirst, serverTimestamp } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js'
 
 
 // Firebase configuration
@@ -185,8 +185,10 @@ function setup() {
                 const checkInclude = answer.includes(prompt);
                 // check for used words in the master list stored as an array in the host node
                 let checkDuplicates;
-                if (playerArray[0].player.usedWords) {
-                    checkDuplicates = playerArray[0].player.usedWords.includes(answer);
+
+                const hostPlayer = playerArray.find(p => p.player.host === true);
+                if (hostPlayer.player.usedWords) {
+                    checkDuplicates = hostPlayer.player.usedWords.includes(answer);
                 }
                 else {
                     checkDuplicates = false;
@@ -327,7 +329,7 @@ function setup() {
                     }
 
                     // update the used words master list in the player node
-                    let newUsedWords = playerArray[0].player.usedWords;
+                    let newUsedWords = hostPlayer.player.usedWords;
                     if (!newUsedWords) {
                         newUsedWords = [];
                         newUsedWords.push(answer);
@@ -336,7 +338,7 @@ function setup() {
                         newUsedWords.push(answer);
                     }
                     // update the host variables with the player turn, prompt, and used words
-                    update(ref(db, "players/" + playerArray[0].playerKey), {
+                    update(ref(db, "players/" + hostPlayer.playerKey), {
                         playerTurn: playerTurn,
                         prompt: prompt,
                         usedWords: newUsedWords
@@ -415,7 +417,9 @@ function setup() {
 
         onDisconnect(leaveMessageRef).set({
             name: name,
-            status: "leave"
+            status: "leave",
+            timestamp: serverTimestamp(),
+            playerId: playerId
         });
 
         const dictName = document.querySelector("#dropdown").value;
@@ -481,6 +485,13 @@ function setup() {
                     playerArray.push({playerKey, player});
                 })
 
+                if (playerArray.length == 1 && host !== true) {
+                    host = true;
+                    update(selfPlayerRef, {
+                        host: true
+                    })
+                }
+
                 // display the players
                 document.querySelector(".players-container").innerHTML = "";
                 
@@ -490,6 +501,7 @@ function setup() {
 
                     newPlayerItem.innerHTML = "<img src='./images/avatar-" + playerArray[i].player.avatar + ".png' class='player-item-avatar'>" + playerArray[i].player.name + " &bullet; " + playerArray[i].player.coins + "<div class='health'></div><img src='./images/fire.gif' class='fire'>";
                     newPlayerItem.className = "player-item";
+                    newPlayerItem.id = playerArray[i].playerKey;
 
                     // if the player is you
                     if (playerArray[i].playerKey == playerId) {
@@ -507,7 +519,8 @@ function setup() {
 
                     if (gameOn) {
                         // if it's the player's turn, highlight them red
-                        if (i == playerArray[0].player.playerTurn) {
+                        const hostPlayer = playerArray.find(p => p.player.host === true);
+                        if (i == hostPlayer.player.playerTurn) {
                             newPlayerItem.style.backgroundColor = "rgb(from var(--tertiary) r g b / 0.3)";
                             newPlayerItem.style.color = "var(--primary)";
                         }
@@ -537,7 +550,8 @@ function setup() {
                     
                 // if your player ID matches the player ID of the first player in the array we got from the database, it means you joined first or you are the only player who has joined, and you are the host or controller of the game
                 if (gameOn === false) {
-                    if (playerArray[0].playerKey == playerId) {
+                    const hostPlayer = playerArray.find(p => p.player.host === true);
+                    if (hostPlayer.playerKey == playerId) {
                         host = true;
                         // set your host value to true
                         update(selfPlayerRef, {
@@ -550,9 +564,10 @@ function setup() {
 
                     // no one else sees the settings, etc.
                     else {
+                        const hostPlayer = playerArray.find(p => p.player.host === true);
                         host = false;
-                        changeDictionary(playerArray[0].player.dictionary);
-                        difficulty = playerArray[0].player.difficulty;
+                        changeDictionary(hostPlayer.player.dictionary);
+                        difficulty = hostPlayer.player.difficulty;
                         document.querySelector(".difficulty p").textContent = "difficulty: " + difficulty;
                         document.querySelector(".slider").style.display = "none";
                         document.querySelector("#dropdown").style.display = "none";
@@ -566,9 +581,10 @@ function setup() {
                 }
                 
                 // retrieve the startGame trigger from the database and start the game
-                if (playerArray[0].player.startGame === true) {
+                const hostPlayer = playerArray.find(p => p.player.host === true);
+                if (hostPlayer.player.startGame === true) {
                     if (host === true) {
-                        update(ref(db, "players/" + playerArray[0].playerKey), {
+                        update(ref(db, "players/" + hostPlayer.playerKey), {
                             startGame: false
                         })
                     }
@@ -577,9 +593,9 @@ function setup() {
                 }
 
                 // retrieve the endGame trigger from the database and end the game
-                if (playerArray[0].player.endGame === true) {
+                if (hostPlayer.player.endGame === true) {
                     if (host === true) {
-                        update(ref(db, "players/" + playerArray[0].playerKey), {
+                        update(ref(db, "players/" + hostPlayer.playerKey), {
                             endGame: false
                         })
                     }
@@ -588,14 +604,14 @@ function setup() {
                 }
 
                 // retrieve the player's turn from the host
-                playerTurn = playerArray[0].player.playerTurn;
+                playerTurn = hostPlayer.player.playerTurn;
                 // get the index number of your player object in the playerArray
                 const myPlayerIndex = playerArray.findIndex(player => player.playerKey === playerId);
 
                 const playerTurnMessage = document.querySelector('.player-turn');
                 // check if it's your turn
                 if (gameOn === true) {
-                    if (playerArray[0].player.playerTurn == myPlayerIndex) {
+                    if (hostPlayer.player.playerTurn == myPlayerIndex) {
                         // if it's your turn, display it as so
                         textInput.style.display = "inline";
                         textInput.focus();
@@ -628,7 +644,7 @@ function setup() {
                                     }
 
                                     // update the host variables with the player turn and prompt
-                                    update(ref(db, "players/" + playerArray[0].playerKey), {
+                                    update(ref(db, "players/" + hostPlayer.playerKey), {
                                         playerTurn: playerTurn,
                                         prompt: prompt
                                     })
@@ -672,7 +688,7 @@ function setup() {
                             }
 
                             // update the host variables with the player turn and prompt
-                            update(ref(db, "players/" + playerArray[0].playerKey), {
+                            update(ref(db, "players/" + hostPlayer.playerKey), {
                                 playerTurn: playerTurn,
                                 prompt: prompt
                             })
@@ -696,7 +712,7 @@ function setup() {
                 
 
                 // display the prompt you get from the host
-                prompt = playerArray[0].player.prompt;
+                prompt = hostPlayer.player.prompt;
                 document.querySelector('.prompt').textContent = prompt.toUpperCase();
 
                 // if no more players are alive, end the game
@@ -872,18 +888,21 @@ function setup() {
 
         set(joinMessageRef, {
             name: name,
-            status: "join"
+            status: "join",
+            timestamp: serverTimestamp(),
+            playerId: playerId
         });
 
         // send a new message in the chat
         document.querySelector("#messageInput").addEventListener("keydown", function (e) {
             if (e.which === 13 && this.value.length > 0) {
                 const newMessageRef = push(messageRef);
-
                 // send the message
                 set(newMessageRef, {
                     name: name,
-                    message: this.value
+                    message: this.value,
+                    timestamp: serverTimestamp(),
+                    playerId: playerId
                 });
                 
                 this.value = "";
@@ -891,26 +910,91 @@ function setup() {
         })
 
         // when messages are added, update the messages display
-        let addedMessage;
+        // let addedMessage;
+        let messagesArray = [];
         onChildAdded(messageRef, (snapshot) => {
-            addedMessage = snapshot.val();
 
-            // message that has been typed
-            if (addedMessage.message) {
-                document.querySelector(".messages").innerHTML = document.querySelector(".messages").innerHTML + "<br><b>" + addedMessage.name + ":</b> " + addedMessage.message;
+            // addedMessage = snapshot.val();
+
+            messagesArray.push({
+                messageId: snapshot.key,
+                ...snapshot.val()
+            });
+
+            messagesArray.sort((a, b) => a.timestamp - b.timestamp);
+
+            if (messagesArray.length > 50) {
+                if (host == true) {
+                    remove(ref(db, `messages/${messagesArray[0].messageId}`));
+                }
+
+                messagesArray.splice(0, 1);
             }
-            // player joining message
-            else if (addedMessage.status == "join" && addedMessage.name !== name) {
-                document.querySelector(".messages").innerHTML = document.querySelector(".messages").innerHTML + "<br><span style='color: var(--tertiary)'><b>" + addedMessage.name + "</b> has joined the game</span>";
-            }
-            // player leave message
-            else if (addedMessage.status == "leave") {
-                document.querySelector(".messages").innerHTML = document.querySelector(".messages").innerHTML + "<br><span style='color: var(--tertiary)'><b>" + addedMessage.name + "</b> has left the game</span>";
+
+            document.querySelector(".messages").innerHTML = "";
+
+            for (let i = 0; i < messagesArray.length; i++) {
+                if (messagesArray[i].message && messagesArray[i].playerId !== playerId) {
+                   document.querySelector(".messages").innerHTML = document.querySelector(".messages").innerHTML + "<div class='message'><b>" + messagesArray[i].name + ":</b> " + messagesArray[i].message + "</div>";
+                }
+
+                else if (messagesArray[i].message && messagesArray[i].playerId == playerId) {
+                   document.querySelector(".messages").innerHTML = document.querySelector(".messages").innerHTML + "<div style='background-color: rgba(150, 150, 150, 0.2)' class='message your-message'><b>" + messagesArray[i].name + ":</b> " + messagesArray[i].message + "</div>";
+                }
+
+                else if (messagesArray[i].status == "join" && messagesArray[i].playerId !== playerId) {
+                   document.querySelector(".messages").innerHTML = document.querySelector(".messages").innerHTML + "<div style='color: var(--tertiary)' class='message'><b>" + messagesArray[i].name + " has joined</b></div>";
+                }
+
+                else if (messagesArray[i].status == "leave") {
+                   document.querySelector(".messages").innerHTML = document.querySelector(".messages").innerHTML + "<div style='color: var(--tertiary)' class='message'><b>" + messagesArray[i].name + " has left</b></div>";
+                }
             }
             
             // always scroll to the most recent message
             document.querySelector(".messages").scrollTop = document.querySelector(".messages").scrollHeight;
         });
+
+        let makeHostOpen = false;
+        let clickedId;
+        window.addEventListener("click", function(e) {
+            const targetItem = e.target.closest('.player-item');
+
+            const x = e.clientX;
+            const y = e.clientY;
+
+            if (targetItem && host == true) {
+                if (!makeHostOpen) {
+                    document.querySelector(".make-host").style.display = "block";
+                    document.querySelector(".make-host").style.left = x + "px";
+                    document.querySelector(".make-host").style.top = y + "px";
+                    makeHostOpen = true;
+
+                    clickedId = targetItem.id;
+                }
+
+                else {
+                    document.querySelector(".make-host").style.display = "none";
+                    makeHostOpen = false;
+                }
+            }
+        })
+
+        document.querySelector(".make-host").addEventListener("click", function() {
+            if (clickedId && host == true && clickedId !== playerId) {
+                document.querySelector(".make-host").style.display = "none";
+                makeHostOpen = false;
+
+                host = false;
+                update(ref(db, "players/" + clickedId), {
+                    host: true
+                })
+                
+                update(selfPlayerRef, {
+                    host: false
+                })
+            }
+        })
     }
 
     // select which avatar you want on the main menu
@@ -1028,6 +1112,7 @@ function setup() {
                 document.querySelector(".coins").style.color = "var(--secondary)";
                 document.querySelector(".dictionaries").style.color = "var(--secondary)";
                 document.querySelector(".difficulty").style.color = "var(--secondary)";
+                document.querySelector("header").style.backgroundColor = "var(--primary)";
                 settingsOpen = true;
             }, 5)
         }
@@ -1039,6 +1124,7 @@ function setup() {
             document.querySelector(".coins").style.color = "var(--primary)";
             document.querySelector(".dictionaries").style.color = "var(--primary)";
             document.querySelector(".difficulty").style.color = "var(--primary)";
+            document.querySelector("header").style.backgroundColor = "var(--secondary)";
             settingsOpen = false;
         }
     })
