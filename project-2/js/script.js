@@ -74,6 +74,7 @@ function setup() {
     let yourTurnTrigger = false;
     let turnTimer;
     let streakTimer;
+    let timerTime = 7;
 
     // load sounds
     let sound1 = new Audio('./sounds/sound-1.mp3');
@@ -83,6 +84,7 @@ function setup() {
     let soundCoin2 = new Audio('./sounds/coin2.mp3');
     let soundCoin3 = new Audio('./sounds/coin3.mp3');
     let soundIncorrect = new Audio('./sounds/incorrect.mp3');
+    let loseHealth = new Audio('./sounds/lose-health.mp3');
     let volume = 1;
 
     // fetch the dictionary text files
@@ -461,6 +463,7 @@ function setup() {
                 host: false,
                 dictionary: dictName,
                 difficulty: difficulty,
+                timerTime: timerTime,
                 playerTurn: 0,
                 prompt: "er",
                 typing: "",
@@ -560,6 +563,10 @@ function setup() {
 
                         document.querySelector(".play-button").style.display = "block";
                         document.querySelector(".waiting").style.display = "none";
+
+                        document.querySelector(".slider").style.display = "block";
+                        document.querySelector(".timer-slider").style.display = "block";
+                        document.querySelector("#dropdown").style.display = "block";
                     }
 
                     // no one else sees the settings, etc.
@@ -569,7 +576,10 @@ function setup() {
                         changeDictionary(hostPlayer.player.dictionary);
                         difficulty = hostPlayer.player.difficulty;
                         document.querySelector(".difficulty p").textContent = "difficulty: " + difficulty;
+                        timerTime = hostPlayer.player.timerTime;
+                        document.querySelector(".timer-time p").textContent = "timer: " + timerTime + "s";
                         document.querySelector(".slider").style.display = "none";
+                        document.querySelector(".timer-slider").style.display = "none";
                         document.querySelector("#dropdown").style.display = "none";
                         document.querySelector(".dictionaries p").textContent = "dictionary: " + document.querySelector("#dropdown").value;
                         textInput.focus();
@@ -577,6 +587,12 @@ function setup() {
                         displayText.innerHTML = "";
                         document.querySelector(".play-button").style.display = "none";
                         document.querySelector(".waiting").style.display = "block";
+                        // come back
+                        update(selfPlayerRef, {
+                            difficulty: hostPlayer.player.difficulty,
+                            timerTime: hostPlayer.player.timerTime,
+                            dictionary: hostPlayer.player.dictionary
+                        })
                     }
                 }
                 
@@ -662,7 +678,9 @@ function setup() {
                                         typing: "",
                                         health: newHealth
                                     })
-                                }, 10000)
+
+                                    loseHealth.play();
+                                }, timerTime * 1000)
                             }
                             
                             // if the streak timer runs out, set your win streak back to 0
@@ -759,6 +777,23 @@ function setup() {
             }
         })
 
+        // update the timer time based on the slider value
+        document.querySelector(".timer-slider").addEventListener("change", function () {
+            if (host === true) {
+                document.querySelector(".timer-time p").textContent = "timer: " + this.value + "s";
+
+                timerTime = this.value;
+                sound1.play();
+
+                saveStateHandler();
+
+                // save the timer to your Firebase player node
+                update(selfPlayerRef, {
+                    timerTime: timerTime
+                })
+            }
+        })
+
         // click the play button as the host to send the startGame trigger
         document.querySelector(".play-button").addEventListener("click", function() {
             if (host === true) {
@@ -791,6 +826,7 @@ function setup() {
         function startGame() {
             gameOn = true;
             document.querySelector(".slider").style.display = "none";
+            document.querySelector(".timer-slider").style.display = "none";
             document.querySelector(".play-button").style.display = "none";
             document.querySelector(".waiting").style.display = "none";
             document.querySelector("#dropdown").style.display = "none";
@@ -829,6 +865,7 @@ function setup() {
         function endGame() {
             gameOn = false;
             document.querySelector(".slider").style.display = "block";
+            document.querySelector(".timer-slider").style.display = "block";
             document.querySelector(".play-button").style.display = "block";
             document.querySelector("#dropdown").style.display = "block";
             document.querySelector(".prompt-container").style.display = "none";
@@ -1057,6 +1094,10 @@ function setup() {
             localStorage.setItem("difficulty", difficulty);
         }
 
+        if (timerTime !== 7) {
+            localStorage.setItem("timerTime", timerTime);
+        }
+
         if (document.querySelector("#dropdown").value) {
             localStorage.setItem("dictionary", document.querySelector("#dropdown").value);
         }
@@ -1081,6 +1122,13 @@ function setup() {
             difficulty = localDifficulty;
             document.querySelector(".difficulty p").textContent = "difficulty: " + difficulty;
             document.querySelector(".slider").value = difficulty;
+        }
+
+        let localTimerTime = Number(localStorage.getItem("timerTime"));
+        if (localTimerTime !== 0) {
+            timerTime = localTimerTime;
+            document.querySelector(".timer-time p").textContent = "timer: " + timerTime + "s";
+            document.querySelector(".timer-slider").value = timerTime;
         }
         
         let localDictionary = localStorage.getItem("dictionary");
@@ -1107,11 +1155,13 @@ function setup() {
             setTimeout(function() {
                 settings.style.transform = "translateY(0)";
                 document.querySelector(".slider").style.backgroundColor = "var(--secondary)";
+                document.querySelector(".timer-slider").style.backgroundColor = "var(--secondary)";
                 document.querySelector("select").style.backgroundColor = "var(--secondary)";
                 document.querySelector("select").style.color = "var(--primary)";
                 document.querySelector(".coins").style.color = "var(--secondary)";
                 document.querySelector(".dictionaries").style.color = "var(--secondary)";
                 document.querySelector(".difficulty").style.color = "var(--secondary)";
+                document.querySelector(".timer-time").style.color = "var(--secondary)";
                 document.querySelector("header").style.backgroundColor = "var(--primary)";
                 settingsOpen = true;
             }, 5)
@@ -1119,11 +1169,13 @@ function setup() {
         else {
             settings.style.transform = "translateY(-100vh)";
             document.querySelector(".slider").style.backgroundColor = "var(--primary)";
+            document.querySelector(".timer-slider").style.backgroundColor = "var(--primary)";
             document.querySelector("select").style.backgroundColor = "var(--primary)";
             document.querySelector("select").style.color = "var(--secondary)";
             document.querySelector(".coins").style.color = "var(--primary)";
             document.querySelector(".dictionaries").style.color = "var(--primary)";
             document.querySelector(".difficulty").style.color = "var(--primary)";
+            document.querySelector(".timer-time").style.color = "var(--primary)";
             document.querySelector("header").style.backgroundColor = "var(--secondary)";
             settingsOpen = false;
         }

@@ -251,7 +251,7 @@ option {
     outline: none;
 }
 
-.difficulty {
+.difficulty, .timer-time {
     font-family: var(--font1);
     width: 200px;
     display: flex;
@@ -260,7 +260,7 @@ option {
     transition: all 0.5s;
 }
 
-.slider {
+.slider, .timer-slider {
     -webkit-appearance: none;
     appearance: none;
     width: 100%;
@@ -273,7 +273,7 @@ option {
     border-radius: var(--radius);
 }
 
-.slider::-webkit-slider-thumb {
+.slider::-webkit-slider-thumb, .timer-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
     width: 25px;
@@ -283,7 +283,7 @@ option {
     border-radius: var(--radius);
 }
 
-.slider::-moz-range-thumb {
+.slider::-moz-range-thumb, .timer-slider::-moz-range-thumb {
     width: 25px;
     height: 25px;
     background: var(--tertiary);
@@ -723,24 +723,24 @@ option {
         font-size: 16px;
     }
 
-    .difficulty {
+    .difficulty, .timer-time {
         gap: 10px;
         width: min-content;
         white-space: nowrap;
     }
 
-    .slider {
+    .slider, .timer-slider {
         width: 100%;
         height: 30px;
         padding: 10px;
     }
 
-    .slider::-webkit-slider-thumb {
+    .slider::-webkit-slider-thumb, .timer-slider::-webkit-slider-thumb {
         width: 15px;
         height: 15px;
     }
 
-    .slider::-moz-range-thumb {
+    .slider::-moz-range-thumb, .timer-slider::-moz-range-thumb {
         width: 15px;
         height: 15px;
     }
