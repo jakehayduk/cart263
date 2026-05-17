@@ -62,6 +62,10 @@ header {
     width: 100%;
     height: 100%;
     overflow: hidden;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transition: all 0.3s;
 }
 
 .title-screen {
@@ -646,18 +650,17 @@ option {
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* padding: 10px; */
+    padding-top: 100px;
     transition: all 0.3s;
 }
 
 .messages {
-    position: absolute;
-    top: 110px;
     width: 100%;
-    height: calc(100% - 150px);
     overflow-y: scroll;
     font-size: 0.9rem;
     overflow-wrap: break-word;
+    padding-top: 15px;
+    padding-bottom: 3px;
 }
 
 ::-webkit-scrollbar {
@@ -678,8 +681,6 @@ option {
 
 #messageInput {
     background: rgba(0, 0, 0, 0.2);
-    position: absolute;
-    /* height: 100px; */
     width: 100%;
     font-size: 1rem;
     padding: 10px;
@@ -714,6 +715,18 @@ option {
 
 .make-host:hover {
     scale: 1.05;
+}
+
+.timer-bar {
+    width: 100%;
+    height: 5px;
+    /* border-radius: var(--radius); */
+    background-color: var(--tertiary);
+    display: none;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 /* MEDIA QUERIES */
@@ -772,7 +785,8 @@ option {
     }
 
     .messages {
-        height: calc(100% - 160);
+        padding-top: 7px;
+        padding-bottom: 3px;
     }
 }
 

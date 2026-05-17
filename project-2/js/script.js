@@ -73,6 +73,9 @@ function setup() {
     let avatar = 1;
     let yourTurnTrigger = false;
     let turnTimer;
+    let tickingFaster1;
+    let tickingFaster2;
+    let tickingFaster3;
     let streakTimer;
     let timerTime = 7;
 
@@ -85,6 +88,7 @@ function setup() {
     let soundCoin3 = new Audio('./sounds/coin3.mp3');
     let soundIncorrect = new Audio('./sounds/incorrect.mp3');
     let loseHealth = new Audio('./sounds/lose-health.mp3');
+    let ticking = new Audio('./sounds/ticking.mp3');
     let volume = 1;
 
     // fetch the dictionary text files
@@ -200,8 +204,16 @@ function setup() {
                 if ((result == true || result2 == true) && checkInclude == true && answer.length > 2 && checkDuplicates == false) {
                     clearTimeout(turnTimer);
                     clearTimeout(streakTimer);
-                    yourTurnTrigger = false;
+                    setTimeout(function() {
+                        yourTurnTrigger = false;
+                    }, 100)
 
+                    document.querySelector(".timer-bar").style.display = "none";
+                    document.querySelector(".timer-bar").style.width = "100%";
+
+                    ticking.pause();
+                    ticking.currentTime = 0;
+                    
                     usedWords.push(answer);
 
                     textInput.value = "";
@@ -561,9 +573,16 @@ function setup() {
                             host: true
                         })
 
-                        document.querySelector(".play-button").style.display = "block";
-                        document.querySelector(".waiting").style.display = "none";
-
+                        if (playerArray.length > 1) {
+                            document.querySelector(".play-button").style.display = "block";
+                            document.querySelector(".waiting").style.display = "none";
+                        }
+                        else {
+                            document.querySelector(".play-button").style.display = "none";
+                            document.querySelector(".waiting").style.display = "block";
+                            document.querySelector(".waiting").textContent = "Waiting for players";
+                        }
+                    
                         document.querySelector(".slider").style.display = "block";
                         document.querySelector(".timer-slider").style.display = "block";
                         document.querySelector("#dropdown").style.display = "block";
@@ -587,7 +606,7 @@ function setup() {
                         displayText.innerHTML = "";
                         document.querySelector(".play-button").style.display = "none";
                         document.querySelector(".waiting").style.display = "block";
-                        // come back
+
                         update(selfPlayerRef, {
                             difficulty: hostPlayer.player.difficulty,
                             timerTime: hostPlayer.player.timerTime,
@@ -644,6 +663,34 @@ function setup() {
                         // this triggers once at the start of your turn
                         if (yourTurnTrigger === false) {
                             yourTurnTrigger = true;
+                            ticking.playbackRate = 1;
+                            ticking.play();
+                            
+                            tickingFaster1 = setTimeout(function() {
+                                ticking.playbackRate = 1.1;
+                            }, (timerTime * 1000) / 2)
+                            
+                            tickingFaster2 = setTimeout(function() {
+                                ticking.playbackRate = 1.2;
+                            }, (timerTime * 1000) / 1.5)
+
+                            tickingFaster3 = setTimeout(function() {
+                                ticking.playbackRate = 1.4;
+                            }, (timerTime * 1000) / 1.25)
+
+                            if (playerArray.length > 1) {
+                                document.querySelector(".timer-bar").style.display = "block";
+                                document.querySelector(".timer-bar").style.width = "100%";
+                                document.querySelector(".timer-bar").style.backgroundColor = "#aecd31";
+                                document.querySelector(".timer-bar").style.filter = "drop-shadow(0px 0px 10px #aecd31)";
+                                document.querySelector(".timer-bar").style.transition = "all " + timerTime + "s linear";
+                                setTimeout(function() {
+                                    document.querySelector(".timer-bar").style.width = "0px";
+                                    document.querySelector(".timer-bar").style.backgroundColor = "#D72D51";
+                                    document.querySelector(".timer-bar").style.filter = "drop-shadow(0px 0px 10px #D72D51)";
+                                }, 100)
+                            }
+                            
                             
                             // if there is more than one player and you are alive, start the timer
                             if (playerArray.length > 1  && playerArray[myPlayerIndex].player.health > 0) {
@@ -680,6 +727,12 @@ function setup() {
                                     })
 
                                     loseHealth.play();
+
+                                    document.querySelector(".timer-bar").style.width = "0px";
+                                    document.querySelector(".timer-bar").style.display = "none";
+
+                                    ticking.pause();
+                                    ticking.currentTime = 0;
                                 }, timerTime * 1000)
                             }
                             
@@ -719,6 +772,9 @@ function setup() {
                         yourTurnTrigger = false;
                         clearTimeout(turnTimer);
                         clearTimeout(streakTimer);
+                        clearTimeout(tickingFaster1);
+                        clearTimeout(tickingFaster2);
+                        clearTimeout(tickingFaster3);
                         displayText.innerHTML = playerArray[playerTurn].player.typing;
                         resetTurnText = false;
                         playerTurnMessage.innerHTML = playerArray[playerTurn].player.name + "\'s turn";
@@ -736,7 +792,7 @@ function setup() {
                 // if no more players are alive, end the game
                 alivePlayers = playerArray.filter(player => player.player.health > 0);
                 setTimeout(function() {
-                    if (host === true && alivePlayers.length <= 0 && gameOn === true) {
+                    if (host === true && alivePlayers.length <= 1 && gameOn === true) {
                         update(selfPlayerRef, {
                             endGame: true
                         })
@@ -796,7 +852,7 @@ function setup() {
 
         // click the play button as the host to send the startGame trigger
         document.querySelector(".play-button").addEventListener("click", function() {
-            if (host === true) {
+            if (host === true && playerArray.length > 1) {
                 update(selfPlayerRef, {
                     startGame: true
                 })
@@ -812,12 +868,14 @@ function setup() {
                 document.querySelector(".messages-modal").style.right = "0vw";
                 document.querySelector(".messages-button").style.right = "calc(30vw + 10px)";
                 document.querySelector(".arrow").style.transform = "translate(-70%, -50%) rotate(-135deg)";
+                document.querySelector(".gameplay").style.width = "70vw";
                 messagesOpen = true;
             }
             else {
                 document.querySelector(".messages-modal").style.right = "-33vw";
                 document.querySelector(".messages-button").style.right = "30px";
                 document.querySelector(".arrow").style.transform = "translate(-30%, -50%) rotate(45deg)";
+                document.querySelector(".gameplay").style.width = "100vw";
                 messagesOpen = false;
             }
         })
@@ -873,7 +931,13 @@ function setup() {
             document.querySelector(".displayText").style.display = "none";
             document.querySelector(".dictionaries p").textContent = "dictionary: ";
             document.querySelector('.player-turn').style.display = "none";
+            document.querySelector('.timer-bar').style.display = "none";
             document.querySelector(".waiting").textContent = "Waiting for host to start";
+
+            clearTimeout(turnTimer);
+            clearTimeout(streakTimer);
+            ticking.pause();
+            ticking.currentTime = 0;
 
             // if you were waiting in the lobby for someone's game to end, now your player is created and you join the game
             if (waiting === false) {
@@ -960,7 +1024,7 @@ function setup() {
 
             messagesArray.sort((a, b) => a.timestamp - b.timestamp);
 
-            if (messagesArray.length > 50) {
+            if (messagesArray.length > 60) {
                 if (host == true) {
                     remove(ref(db, `messages/${messagesArray[0].messageId}`));
                 }
